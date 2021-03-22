@@ -1,0 +1,275 @@
+<% extend("master.ejs") %>
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">List of appointment appointments</h1>
+
+</div>
+
+<!-- Content Row -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">List of appointment appointments</h6>
+        <div class="my-3">
+            <label for="dateDoctorAppointment">Time: </label>
+            <form method="GET" action="/merchant/manage/appointment">
+                <div class="form-row">
+                    <input id="dateDoctorAppointment" name="dateDoctorAppointment" value="<%= date %>" type="text"
+                           class="form-control col-4 mr-4">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Time</th>
+                    <th>No</th>
+                    <th> Name</th>
+                    <th> Action</th>
+                </tr>
+                <% if(appointments['08:00 - 09:00']) { %>
+                    <tr>
+                        <td rowspan="<%= appointments['08:00 - 09:00'].length + 1 %>"><b>8h - 9h</b></td>
+                    </tr>
+                    <% appointments['08:00 - 09:00'].forEach(function(x, index) { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td><%= x.name %></td>
+                           
+
+                            <td class="mw-100 w-25">
+                                <button title="View patient's information" type="button" data-patient-id="<%= x.id %>"
+                                        class="btn btn-info doctor-view-detail">Detail
+                                </button>
+                               
+                                
+                                <i class="fa fa-trash-o" style="cursor: pointer" data-patient-id="<%= x.id %>" aria-hidden="true"
+                                   title="Cancel with the customer"></i>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } %>
+                <% if(appointments['09:00 - 10:00']) { %>
+                    <tr>
+                        <td rowspan="<%= appointments['09:00 - 10:00'].length + 1 %>"><b>9h - 10h</b></td>
+                    </tr>
+                    <% appointments['09:00 - 10:00'].forEach(function(x, index) { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td><%= x.name %></td>
+                           
+
+                            <td class="mw-100 w-25">
+                                <button title="View patient's information" type="button" data-patient-id="<%= x.id %>"
+                                        class="btn btn-info doctor-view-detail">Detail
+                                </button>
+                               
+                                
+                                <i class="fa fa-trash-o" style="cursor: pointer" data-patient-id="<%= x.id %>" aria-hidden="true"
+                                   title="Cancel with the customer"></i>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } %>
+                <% if(appointments['10:00 - 11:00']) { %>
+                    <tr>
+                        <td rowspan="<%= appointments['10:00 - 11:00'].length + 1 %>"><b>10h - 11h</b></td>
+                    </tr>
+                    <% appointments['10:00 - 11:00'].forEach(function(x, index) { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td><%= x.name %></td>
+                           
+
+                            <td class="mw-100 w-25">
+                                <button title="View patient's information" type="button" data-patient-id="<%= x.id %>"
+                                        class="btn btn-info doctor-view-detail">Detail
+                                </button>
+                               
+                                
+                                <i class="fa fa-trash-o" style="cursor: pointer" data-patient-id="<%= x.id %>" aria-hidden="true"
+                                   title="Cancel with the customer"></i>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } %>
+                <% if(appointments['11:00 - 12:00']) { %>
+                    <tr>
+                        <td rowspan="<%= appointments['11:00 - 12:00'].length + 1 %>"><b>11h - 12h</b></td>
+                    </tr>
+                    <% appointments['11:00 - 12:00'].forEach(function(x, index) { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td><%= x.name %></td>
+                           
+
+                            <td class="mw-100 w-25">
+                                <button title="View patient's information" type="button" data-patient-id="<%= x.id %>"
+                                        class="btn btn-info doctor-view-detail">Detail
+                                </button>
+                               
+                                
+                                <i class="fa fa-trash-o" style="cursor: pointer" data-patient-id="<%= x.id %>" aria-hidden="true"
+                                   title="Cancel with the customer"></i>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } %>
+                <% if(appointments['13:00 - 14:00']) { %>
+                    <tr>
+                        <td rowspan="<%= appointments['13:00 - 14:00'].length + 1 %>"><b>13h - 14h</b></td>
+                    </tr>
+                    <% appointments['13:00 - 14:00'].forEach(function(x, index) { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td><%= x.name %></td>
+                           
+
+                            <td class="mw-100 w-25">
+                                <button title="View patient's information" type="button" data-patient-id="<%= x.id %>"
+                                        class="btn btn-info doctor-view-detail">Detail
+                                </button>
+                               
+                                
+                                <i class="fa fa-trash-o" style="cursor: pointer" data-patient-id="<%= x.id %>" aria-hidden="true"
+                                   title="Cancel with the customer"></i>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } %>
+                <% if(appointments['14:00 - 15:00']) { %>
+                    <tr>
+                        <td rowspan="<%= appointments['14:00 - 15:00'].length + 1 %>"><b>14h - 15h</b></td>
+                    </tr>
+                    <% appointments['14:00 - 15:00'].forEach(function(x, index) { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td><%= x.name %></td>
+                           
+
+                            <td class="mw-100 w-25">
+                                <button title="View patient's information" type="button" data-patient-id="<%= x.id %>"
+                                        class="btn btn-info doctor-view-detail">Detail
+                                </button>
+                               
+                                
+                                <i class="fa fa-trash-o" style="cursor: pointer" data-patient-id="<%= x.id %>" aria-hidden="true"
+                                   title="Cancel with the customer"></i>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } %>
+                <% if(appointments['15:00 - 16:00']) { %>
+                    <tr>
+                        <td rowspan="<%= appointments['15:00 - 16:00'].length + 1 %>"><b>15h - 16h</b></td>
+                    </tr>
+                    <% appointments['15:00 - 16:00'].forEach(function(x, index) { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td><%= x.name %></td>
+                           
+
+                            <td class="mw-100 w-25">
+                                <button title="View patient's information" type="button" data-patient-id="<%= x.id %>"
+                                        class="btn btn-info doctor-view-detail">Detail
+                                </button>
+                               
+                                
+                                <i class="fa fa-trash-o" style="cursor: pointer" data-patient-id="<%= x.id %>" aria-hidden="true"
+                                   title="Cancel with the customer"></i>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } %>
+                <% if(appointments['16:00 - 17:00']) { %>
+                    <tr>
+                        <td rowspan="<%= appointments['16:00 - 17:00'].length + 1 %>"><b>16h - 17h</b></td>
+                    </tr>
+                    <% appointments['16:00 - 17:00'].forEach(function(x, index) { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td><%= x.name %></td>
+                           
+
+                            <td class="mw-100 w-25">
+                                <button title="View patient's information" type="button" data-patient-id="<%= x.id %>"
+                                        class="btn btn-info doctor-view-detail">Detail
+                                </button>
+                               
+                                
+                                <i class="fa fa-trash-o" style="cursor: pointer" data-patient-id="<%= x.id %>" aria-hidden="true"
+                                   title="Cancel with the customer"></i>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } %>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal detail info patient-->
+<div class="modal fade " tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
+     id="modalDetailPatientForDoctor">
+    <div class="modal-dialog mw-100 w-75" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Customer information</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-4">
+                        <label class="col-form-label text-label" for="patientName">Name:</label>
+                        <input type="text" class="form-control" id="patientName" name="patientName">
+                    </div>
+                    <div class="form-group col-4">
+                        <label class="col-form-label text-label" for="patientPhone">Phone number:</label>
+                        <input type="text" class="form-control" id="patientPhone" name="patientPhone">
+                    </div>
+                    <div class="form-group col-4">
+                        <label class="col-form-label text-label" for="patientEmail">Email:</label>
+                        <input type="email" class="form-control" id="patientEmail" name="patientEmail">
+                    </div>
+                    <div class="form-group col-2">
+                        <label class="col-form-label text-label" for="patientDate">Date:</label>
+                        <input type="text" class="form-control" id="patientDate" name="patientDate" readonly>
+                    </div>
+                    <div class="form-group col-2">
+                        <label class="col-form-label text-label" for="patientTime">Time:</label>
+                        <input type="text" class="form-control" id="patientTime" name="patientTime" readonly>
+                    </div>
+                    <div class="form-group col-4">
+                        <label class="col-form-label text-label" for="patientReason">Service Booking:</label>
+                        <textarea class="form-control" name="patientReason" id="patientReason"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label for="patientAddress">Extra info:</label>
+                    </div>
+
+                    <div class="form-group col-6">
+                        <label class="col-form-label text-label" for="patientHistoryBreath">Professional Note</label>
+                        <textarea class="form-control" name="patientHistoryBreath" id="patientHistoryBreath"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="ml-3 btn btn-secondary" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Content Row -->
+<script>
+    $(document).ready(function() {
+        $("#listAppointment").addClass('active');
+    })
+</script>
