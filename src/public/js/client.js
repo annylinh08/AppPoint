@@ -289,7 +289,7 @@ function validateInputPageDoctor() {
         return false;
     }
     if ($("#phone").val()) {
-        let isValid = $("#phone").val().match(PHONE_REG);
+        let isValid = $("#phone").val();
         if (isValid) {
             $("#phone").removeClass('is-invalid');
         } else {

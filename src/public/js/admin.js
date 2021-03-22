@@ -543,7 +543,7 @@ function handleChangeDatePicker(currentDate) {
             $('.btn-schedule').removeClass('btn-css').addClass('btn');
         } else {
             $('#datepicker').datepicker("setDate", new Date());
-            alertify.error('Cant create a medical plan for the past');
+            alertify.error('Cant create a plan for the past');
         }
     });
 }
