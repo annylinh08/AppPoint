@@ -102,7 +102,7 @@
                                                 <span class="d-block mt-2"> Choose a time and book now</span>
                                             </div>
                                             <div style="border-top: 1px solid #ccc" class="d-flex flex-column">
-                                                <span class="d-block pt-3 pb-1" style="text-transform: uppercase">Medical address:</span>
+                                                <span class="d-block pt-3 pb-1" style="text-transform: uppercase">Business address:</span>
                                                 <span class="d-block pb-1"
                                                       style="border-bottom: 1px solid #ccc"><%= doctor.User.address %></span>
                                             </div>
@@ -117,13 +117,13 @@
                 <div class="col-4 mt-3">
                    INTRODUCTION:
                     <hr>
-                    <div>  THE SPECIALIST : <%= specialization.name %></div>
+                    <div>  CATEGORY: <%= specialization.name %></div>
                     <% if(post) { %>
                         <div class="content-description-spe pt-2"><%- post.contentHTML %> </div>
                     <% } %>
                     <hr>
                     <div class="spe-category">
-                        OTHER SPECIALISTS:
+                        OTHER CATEGORIES:
                         <ul>
                             <% listSpecializations.forEach(function(spe) { %>
                                 <% if(spe.id !== specialization.id ){ %>
@@ -147,7 +147,7 @@
     <div class="modal-dialog mw-100 w-75" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Make a medical appointment</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Make an appointment</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -155,7 +155,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-5" style="border-right: 1px solid #ccc;" id="infoDoctorSpe">
-                        <label class="text-label" style="padding-top: 7px">Doctor information:</label>
+                        <label class="text-label" style="padding-top: 7px">Business information:</label>
                         <div class="d-flex flex-row">
                             <img class="avatar-doctor-modal" id="modal-avatar-doctor-spe">
                             <div class="ml-3">
@@ -168,7 +168,7 @@
                         <div class="mt-4" id="doctor-address-spe">
                         </div>
                         <div class="mt-3">Free appointment appointment</div>
-                        <div class="mt-3">Price: 50 USD</div>
+                      
                     </div>
                     <div class="col-7">
                         <form id="form-patient-info-spe">
@@ -202,7 +202,7 @@
             <div class="modal-footer">
                 <div id="processLoading" class="process-loading d-none"> <span class="d-block mx-2"> <strong>Processing</strong></span><div class="loader"></div> </div>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="btn-confirm-booking-spe">Confirm medical appointment</button>
+                <button type="button" class="btn btn-primary" id="btn-confirm-booking-spe">Confirm appointment</button>
             </div>
         </div>
     </div>

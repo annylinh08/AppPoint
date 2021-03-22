@@ -52,7 +52,7 @@ function getScheduleDoctorByDate() {
                                         <span class="d-block pb-1"
                                               style="border-bottom: 1px solid #ccc">${data.doctor.address}</span>
                                     </div>
-                                    <span class="d-block pt-2">Price: 50 USD</span>
+                                    
                                 </div>
                         
                         `;
@@ -60,7 +60,7 @@ function getScheduleDoctorByDate() {
                 } else {
                     html = `
                             <div>
-                                 Doctor "${data.doctor.name}" does not have an appointment on <b>${value}</b>. Please select the next examination schedule.
+                                "${data.doctor.name}" does not have a schedule on <b>${value}</b>. Please select the next available time.
                             </div>
                     `;
                     moreInfo = '';
@@ -126,14 +126,14 @@ function specializationGetScheduleDoctorByDate() {
                                                 <span class="d-block pt-3 pb-1" style="text-transform: uppercase">Address:</span>
                                                 <span class="d-block pb-1" style="border-bottom: 1px solid #ccc">${data.doctor.address}</span>
                                             </div>
-                                            <span class="d-block pt-2">Price: 50 USD</span>
+                                          
                          </div>
                     `;
                 } else {
                     html = `
                             <div class="no-schedule">
                                
-                                 Doctor "${data.doctor.name}" does not have an appointment on <b>${value}</b>. Please select the next examination schedule.
+                                 "${data.doctor.name}" does not have a schedule on <b>${value}</b>. Please select the next available time.
 
                             </div>
                     `;

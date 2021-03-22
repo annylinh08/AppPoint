@@ -42,17 +42,3 @@ export const transMailBookingSuccess = {
         <h4>Thank you very much !</h4>`;
     },
 };
-
-export const transMailRemedy= {
-    subject: "Email sending the medical invoice from the doctor",
-    template: (data) => {
-        return `<h3>Thank you for your trust in booking a medical examination in DoctorCare's system.</h3>
-        After you have seen the doctor's office <b> ${data.doctor} </b>, you can review the billing details from this email attachment. </h4>
-        <div>The password for extracting attachments has the following form: <i>Full name without accent - 3 digits first phone number - last 2 digits of your birth year</div>
-        <br>
-        <div>For example: Full name: Hary Pham, with the registered phone number: 0123456789 and born: 1910, the extracted password is: <b> harypham-012-10 </b> </div>
-        <br>
-        <div>In the event of neither receiving attachments nor decompressing, please contact the support operator<b>911 911</b></div>
-        <h4>Thank you !</h4>`;
-    },
-};
