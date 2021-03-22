@@ -1,4 +1,4 @@
-# shared-doctor-care
+# App-Point
 ## Quickstart (after downloading this project)
 1. Open this project with your favorite editor(IDE), eg: Visual Studio Code
 2. Run the command (to install the node_modules): npm install
@@ -14,4 +14,3 @@ Default, I use the root account. If you use other accounts, change the "DB_USERN
 6. To run this app, use the command: npm start
 7. Enjoy!
 
-Note: I'll update a video to guide you to set up this project soon. Thank you for helping me. Have a nice day! - HaryPhamDev
