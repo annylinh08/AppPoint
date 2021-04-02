@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-    const Patient = sequelize.define('Patient', {
-        doctorId: DataTypes.INTEGER,
+    const Customer = sequelize.define('Customer', {
+        merchantId: DataTypes.INTEGER,
         statusId: DataTypes.INTEGER,
         name: DataTypes.STRING,
         phone: DataTypes.STRING,
@@ -14,11 +14,11 @@ module.exports = (sequelize, DataTypes) => {
         updatedAt: DataTypes.DATE,
         deletedAt: DataTypes.DATE
     }, {});
-    Patient.associate = function(models) {
-        models.Patient.belongsTo(models.User, { foreignKey: 'doctorId' });
-        models.Patient.belongsTo(models.Status, { foreignKey: 'statusId' });
-        models.Patient.hasOne(models.ExtraInfo);
-        models.Patient.hasMany(models.SupporterLog);
+    Customer.associate = function(models) {
+        models.Customer.belongsTo(models.User, { foreignKey: 'merchantId' });
+        models.Customer.belongsTo(models.Status, { foreignKey: 'statusId' });
+        models.Customer.hasOne(models.ExtraInfo);
+        models.Customer.hasMany(models.SupporterLog);
     };
-    return Patient;
+    return Customer;
 };

@@ -17,10 +17,10 @@ module.exports = (sequelize, DataTypes) => {
     User.associate = function(models) {
         models.User.belongsTo(models.Role, { foreignKey: 'roleId' });
         models.User.hasOne(models.Post);
-        models.User.hasOne(models.Doctor_User, { foreignKey: 'doctorId' });
-        models.User.hasMany(models.Patient, { foreignKey: 'doctorId' });
-        models.User.hasMany(models.Schedule, { foreignKey: 'doctorId' });
-        models.User.hasMany(models.Comment, { foreignKey: 'doctorId' });
+        models.User.hasOne(models.Merchant_User, { foreignKey: 'merchantId' });
+        models.User.hasMany(models.Customer, { foreignKey: 'merchantId' });
+        models.User.hasMany(models.Schedule, { foreignKey: 'merchantId' });
+        models.User.hasMany(models.Comment, { foreignKey: 'merchantId' });
     };
 
     return User;

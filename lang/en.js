@@ -9,7 +9,7 @@ export const transMailBookingNew = {
     template: (data) => {
         return `<h3>Thank you for booking an appointment with App-point </h3>
         <h4>Information for booked appointment:</h4>
-        <div>Business' name: ${data.doctor} </div>
+        <div>Business' name: ${data.merchant} </div>
         <div>Time: ${data.time}</div>
         <div>Date: ${data.date}</div>
         <div>Status: <b> Pending - A new appointment is waiting for confirmation</b></div>
@@ -22,7 +22,7 @@ export const transMailBookingFailed = {
     template: (data) => {
         return `<h3>Thank you for booking an appointment with App-point </h3>
         <h4>Information for booked appointment:</h4>
-        <div>Business' name: ${data.doctor} </div>
+        <div>Business' name: ${data.merchant} </div>
         <div>Time: ${data.time}</div>
         <div>Date: ${data.date}</div>
         <div>Status: <b>Cancel - ${data.reason}</b></div>
@@ -35,7 +35,7 @@ export const transMailBookingSuccess = {
     template: (data) => {
         return `<h3>Thank you for booking an appointment with App-point </h3>
         <h4>Information for booked appointment:</h4>
-        <div>Business' name: ${data.doctor} </div>
+        <div>Business' name: ${data.merchant} </div>
         <div>Time: ${data.time}</div>
         <div>Date: ${data.date}</div>
         <div>Status: <b>Succeed</b></div>

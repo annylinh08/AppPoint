@@ -1,11 +1,11 @@
 require("dotenv").config();
 import homeService from "./../services/homeService";
 import specializationService from "./../services/specializationService";
-import doctorService from "./../services/doctorService";
+import merchantService from "./../services/merchantService";
 import userService from "./../services/userService";
 import supporterService from "./../services/supporterService";
 import elasticService from "./../services/syncsElaticService";
-import patientService from "./../services/patientService";
+import customerService from "./../services/customerService";
 import moment from "moment";
 // striptags to remove HTML
 import striptags from "striptags";
@@ -23,12 +23,12 @@ let getHomePage = async (req, res) => {
     try {
         let specializations = await homeService.getSpecializations();
         
-        let doctors = await userService.getInfoDoctors();
+        let merchants = await userService.getInfoMerchants();
         let posts = await homeService.getPosts(LIMIT_POST);
         return res.render("main/homepage/homepage.ejs", {
             user: req.user,
             specializations: specializations,
-            doctors: doctors,
+            merchants: merchants,
             posts: posts,
             pageId: process.env.PAGE_ID
         });
@@ -49,9 +49,9 @@ let getUserPage = (req, res) => {
 let getDetailSpecializationPage = async (req, res) => {
     try {
         let object = await specializationService.getSpecializationById(req.params.id);
-        // using date to get schedule of doctors
+        // using date to get schedule of merchants
         let currentDate = moment().format('DD/MM/YYYY');
-        let doctors = await doctorService.getDoctorsForSpecialization(req.params.id, currentDate);
+        let merchants = await merchantService.getMerchantsForSpecialization(req.params.id, currentDate);
         let sevenDaySchedule = [];
         for (let i = 0; i < 5; i++) {
             let date = moment(new Date()).add(i, 'days').locale('en').format('dddd - DD/MM/YYYY');
@@ -62,7 +62,7 @@ let getDetailSpecializationPage = async (req, res) => {
         return res.render("main/homepage/specialization.ejs", {
             specialization: object.specialization,
             post: object.post,
-            doctors: doctors,
+            merchants: merchants,
             places: object.places,
             sevenDaySchedule: sevenDaySchedule,
             listSpecializations: listSpecializations
@@ -74,7 +74,7 @@ let getDetailSpecializationPage = async (req, res) => {
     }
 };
 
-let getDetailDoctorPage = async (req, res) => {
+let getDetailMerchantPage = async (req, res) => {
     try {
         let currentDate = moment().format('DD/MM/YYYY');
         let sevenDaySchedule = [];
@@ -83,16 +83,16 @@ let getDetailDoctorPage = async (req, res) => {
             sevenDaySchedule.push(date);
         }
 
-        let object = await doctorService.getDoctorWithSchedule(req.params.id, currentDate);
+        let object = await merchantService.getMerchantWithSchedule(req.params.id, currentDate);
 
-        let places = await doctorService.getPlacesForDoctor();
-        let postDoctor = await doctorService.getPostForDoctor(req.params.id);
+        let places = await merchantService.getPlacesForMerchant();
+        let postMerchant = await merchantService.getPostForMerchant(req.params.id);
 
 
-        return res.render("main/homepage/doctor.ejs", {
-            doctor: object.doctor,
+        return res.render("main/homepage/merchant.ejs", {
+            merchant: object.merchant,
             sevenDaySchedule: sevenDaySchedule,
-            postDoctor: postDoctor,
+            postMerchant: postMerchant,
             specialization: object.specialization,
             places: places
         });
@@ -146,10 +146,10 @@ let getPostSearch = async (req, res) => {
 
 let getInfoBookingPage = async (req, res) => {
     try {
-        let patientId = req.params.id;
-        let patient = await patientService.getInfoBooking(patientId);
+        let customerId = req.params.id;
+        let customer = await customerService.getInfoBooking(customerId);
         return res.render('main/homepage/infoBooking.ejs', {
-            patient: patient
+            customer: customer
         });
     } catch (e) {
         console.log(e);
@@ -157,7 +157,7 @@ let getInfoBookingPage = async (req, res) => {
     }
 };
 
-let postBookingDoctorPageWithoutFiles = async (req, res) => {
+let postBookingMerchantPageWithoutFiles = async (req, res) => {
     try {
         let item = req.body;
         item.statusId = statusNewId;
@@ -167,11 +167,11 @@ let postBookingDoctorPageWithoutFiles = async (req, res) => {
         item.placeId = item.places;
         item.createdAt = Date.now();
 
-        let patient = await patientService.createNewPatient(item);
+        let customer = await customerService.createNewCustomer(item);
         return res.status(200).json({
             status: 1,
             message: 'success',
-            patient: patient
+            customer: customer
         })
     } catch (e) {
         console.log(e);
@@ -179,7 +179,7 @@ let postBookingDoctorPageWithoutFiles = async (req, res) => {
     }
 };
 
-let postBookingDoctorPageNormal = (req, res) => {
+let postBookingMerchantPageNormal = (req, res) => {
     imageImageOldForms(req, res, async (err) => {
         if (err) {
             console.log(err);
@@ -209,11 +209,11 @@ let postBookingDoctorPageNormal = (req, res) => {
             item.oldForms = JSON.stringify(image);
             item.createdAt = Date.now();
 
-            let patient = await patientService.createNewPatient(item);
+            let customer = await customerService.createNewCustomer(item);
             return res.status(200).json({
                 status: 1,
                 message: 'success',
-                patient: patient
+                customer: customer
             })
 
         } catch (e) {
@@ -225,7 +225,7 @@ let postBookingDoctorPageNormal = (req, res) => {
 
 let storageImageOldForms = multer.diskStorage({
     destination: (req, file, callback) => {
-        callback(null, "src/public/images/patients");
+        callback(null, "src/public/images/customers");
     },
     filename: (req, file, callback) => {
         let imageName = `${Date.now()}-${file.originalname}`;
@@ -238,10 +238,10 @@ let imageImageOldForms = multer({
     limits: { fileSize: 1048576 * 20 }
 }).array("oldForms");
 
-let getDetailPatientBooking = async (req, res) => {
+let getDetailCustomerBooking = async (req, res) => {
     try {
-        let patient = await patientService.getDetailPatient(req.body.patientId);
-        return res.status(200).json(patient);
+        let customer = await customerService.getDetailCustomer(req.body.customerId);
+        return res.status(200).json(customer);
     } catch (e) {
         console.log(e);
         return res.status(500).json(e);
@@ -250,9 +250,9 @@ let getDetailPatientBooking = async (req, res) => {
 
 let getFeedbackPage = async (req, res) => {
     try {
-        let doctor = await doctorService.getDoctorForFeedbackPage(req.params.id);
+        let merchant = await merchantService.getMerchantForFeedbackPage(req.params.id);
         return res.render("main/homepage/feedback.ejs", {
-            doctor: doctor
+            merchant: merchant
         });
     } catch (e) {
         console.log(e);
@@ -262,7 +262,7 @@ let getFeedbackPage = async (req, res) => {
 
 let postCreateFeedback = async (req, res) => {
     try {
-        let feedback = await doctorService.createFeedback(req.body.data);
+        let feedback = await merchantService.createFeedback(req.body.data);
         return res.status(200).json({
             message: "send feedback success",
             feedback: feedback
@@ -273,12 +273,12 @@ let postCreateFeedback = async (req, res) => {
     }
 };
 
-let getPageForPatients = (req, res) => {
-    return res.render("main/homepage/forPatients.ejs");
+let getPageForCustomers = (req, res) => {
+    return res.render("main/homepage/forCustomers.ejs");
 };
 
-let getPageForDoctors = (req, res) => {
-    return res.render("main/homepage/forDoctors.ejs");
+let getPageForMerchants = (req, res) => {
+    return res.render("main/homepage/forMerchants.ejs");
 };
 
 let postSearchHomePage = async (req, res) => {
@@ -293,11 +293,11 @@ let postSearchHomePage = async (req, res) => {
 
 
 
-let getPageAllDoctors = async (req, res)=>{
+let getPageAllMerchants = async (req, res)=>{
     try{
-        let doctors = await homeService.getDataPageAllDoctors();
-        return res.render("main/homepage/allDoctors.ejs",{
-            doctors: doctors
+        let merchants = await homeService.getDataPageAllMerchants();
+        return res.render("main/homepage/allMerchants.ejs",{
+            merchants: merchants
         })
     }catch (e) {
         console.log(e);
@@ -320,21 +320,21 @@ module.exports = {
     getHomePage: getHomePage,
     getUserPage: getUserPage,
     getDetailSpecializationPage: getDetailSpecializationPage,
-    getDetailDoctorPage: getDetailDoctorPage,
+    getDetailMerchantPage: getDetailMerchantPage,
     getBookingPage: getBookingPage,
     getDetailPostPage: getDetailPostPage,
     getContactPage: getContactPage,
     getPostsWithPagination: getPostsWithPagination,
     getPostSearch: getPostSearch,
     getInfoBookingPage: getInfoBookingPage,
-    postBookingDoctorPageWithoutFiles: postBookingDoctorPageWithoutFiles,
-    postBookingDoctorPageNormal: postBookingDoctorPageNormal,
-    getDetailPatientBooking: getDetailPatientBooking,
+    postBookingMerchantPageWithoutFiles: postBookingMerchantPageWithoutFiles,
+    postBookingMerchantPageNormal: postBookingMerchantPageNormal,
+    getDetailCustomerBooking: getDetailCustomerBooking,
     getFeedbackPage: getFeedbackPage,
     postCreateFeedback: postCreateFeedback,
-    getPageForPatients: getPageForPatients,
-    getPageForDoctors: getPageForDoctors,
+    getPageForCustomers: getPageForCustomers,
+    getPageForMerchants: getPageForMerchants,
     postSearchHomePage: postSearchHomePage,
-    getPageAllDoctors: getPageAllDoctors,
+    getPageAllMerchants: getPageAllMerchants,
     getPageAllSpecializations: getPageAllSpecializations
 };

@@ -12,53 +12,53 @@ const statusNewId = 4;
 let getInfoBooking = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let patient = await db.Patient.findOne({
+            let customer = await db.Customer.findOne({
                 where: { id: id },
-                attributes: [ 'id', 'doctorId' ]
+                attributes: [ 'id', 'merchantId' ]
             });
 
-            if (!patient) {
-                reject(`Can't get patient with id = ${id}`);
+            if (!customer) {
+                reject(`Can't get customer with id = ${id}`);
             }
-            let doctor = await db.User.findOne({
-                where: { id: patient.doctorId },
+            let merchant = await db.User.findOne({
+                where: { id: customer.merchantId },
                 attributes: [ 'name', 'avatar' ]
             });
 
-            patient.setDataValue('doctorName', doctor.name);
-            patient.setDataValue('doctorAvatar', doctor.avatar);
-            resolve(patient);
+            customer.setDataValue('merchantName', merchant.name);
+            customer.setDataValue('merchantAvatar', merchant.avatar);
+            resolve(customer);
         } catch (e) {
             reject(e);
         }
     });
 };
 
-let getForPatientsTabs = () => {
+let getForCustomersTabs = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            let newPatients = await db.Patient.findAll({
+            let newCustomers = await db.Customer.findAll({
                 where: {
                     statusId: statusNewId
                 },
                 order: [ [ 'updatedAt', 'DESC' ] ],
             });
 
-            let pendingPatients = await db.Patient.findAll({
+            let pendingCustomers = await db.Customer.findAll({
                 where: {
                     statusId: statusPendingId
                 },
                 order: [ [ 'updatedAt', 'DESC' ] ],
             });
 
-            let confirmedPatients = await db.Patient.findAll({
+            let confirmedCustomers = await db.Customer.findAll({
                 where: {
                     statusId: statusSuccessId
                 },
                 order: [ [ 'updatedAt', 'DESC' ] ],
             });
 
-            let canceledPatients = await db.Patient.findAll({
+            let canceledCustomers = await db.Customer.findAll({
                 where: {
                     statusId: statusFailedId
                 },
@@ -66,10 +66,10 @@ let getForPatientsTabs = () => {
             });
 
             resolve({
-                newPatients: newPatients,
-                pendingPatients: pendingPatients,
-                confirmedPatients: confirmedPatients,
-                canceledPatients: canceledPatients
+                newCustomers: newCustomers,
+                pendingCustomers: pendingCustomers,
+                confirmedCustomers: confirmedCustomers,
+                canceledCustomers: canceledCustomers
             });
         } catch (e) {
             reject(e);
@@ -77,24 +77,22 @@ let getForPatientsTabs = () => {
     });
 };
 
-let changeStatusPatient = (data, logs) => {
+let changeStatusCustomer = (data, logs) => {
     return new Promise(async (resolve, reject) => {
         try {
 
-            let patient = await db.Patient.findOne({
+            let customer = await db.Customer.findOne({
                 where: { id: data.id }
             });
 
-            let doctor = await db.User.findOne({
-                where: { id: patient.doctorId },
+            let merchant = await db.User.findOne({
+                where: { id: customer.merchantId },
                 attributes: [ 'name', 'avatar' ],
             });
 
-
-            //update tổng số lượt đặt bác sĩ khi status = thành công
             if (data.statusId === statusSuccessId) {
                 let schedule = await db.Schedule.findOne({
-                    where: { doctorId: patient.doctorId, time: patient.timeBooking, date: patient.dateBooking }
+                    where: { merchantId: customer.merchantId, time: customer.timeBooking, date: customer.dateBooking }
                 });
 
                 let sum = +schedule.sumBooking;
@@ -103,7 +101,7 @@ let changeStatusPatient = (data, logs) => {
 
             if (data.statusId === statusFailedId) {
                 let schedule = await db.Schedule.findOne({
-                    where: { doctorId: patient.doctorId, time: patient.timeBooking, date: patient.dateBooking }
+                    where: { merchantId: customer.merchantId, time: customer.timeBooking, date: customer.dateBooking }
                 });
 
                 let sum = +schedule.sumBooking;
@@ -111,7 +109,7 @@ let changeStatusPatient = (data, logs) => {
             }
 
 
-            await patient.update(data);
+            await customer.update(data);
 
             //update logs
             let log = await db.SupporterLog.create(logs);
@@ -119,37 +117,37 @@ let changeStatusPatient = (data, logs) => {
             //send email
             if (data.statusId === statusSuccessId) {
                 let dataSend = {
-                    time: patient.timeBooking,
-                    date: patient.dateBooking,
-                    doctor: doctor.name
+                    time: customer.timeBooking,
+                    date: customer.dateBooking,
+                    merchant: merchant.name
                 };
-                await mailer.sendEmailNormal(patient.email, transMailBookingSuccess.subject, transMailBookingSuccess.template(dataSend));
+                await mailer.sendEmailNormal(customer.email, transMailBookingSuccess.subject, transMailBookingSuccess.template(dataSend));
             }
-            if (data.statusId === statusFailedId && patient.email) {
+            if (data.statusId === statusFailedId && customer.email) {
                 let dataSend = {
-                    time: patient.timeBooking,
-                    date: patient.dateBooking,
-                    doctor: doctor.name,
+                    time: customer.timeBooking,
+                    date: customer.dateBooking,
+                    merchant: merchant.name,
                     reason: log.content
                 };
-                await mailer.sendEmailNormal(patient.email, transMailBookingFailed.subject, transMailBookingFailed.template(dataSend));
+                await mailer.sendEmailNormal(customer.email, transMailBookingFailed.subject, transMailBookingFailed.template(dataSend));
             }
 
-            resolve(patient);
+            resolve(customer);
         } catch (e) {
             reject(e);
         }
     });
 };
 
-let isBookAble = async (doctorId, date, time) => {
+let isBookAble = async (merchantId, date, time) => {
     let schedule = await db.Schedule.findOne({
         where: {
-            doctorId: doctorId,
+            merchantId: merchantId,
             date: date,
             time: time
         },
-        attributes: [ 'id', 'doctorId', 'date', 'time', 'maxBooking', 'sumBooking' ]
+        attributes: [ 'id', 'merchantId', 'date', 'time', 'maxBooking', 'sumBooking' ]
     });
 
     if (schedule) {
@@ -158,53 +156,53 @@ let isBookAble = async (doctorId, date, time) => {
     return false;
 };
 
-let createNewPatient = (data) => {
+let createNewCustomer = (data) => {
     return new Promise((async (resolve, reject) => {
         try {
 
             let schedule = await db.Schedule.findOne({
                 where: {
-                    doctorId: data.doctorId,
+                    merchantId: data.merchantId,
                     date: data.dateBooking,
                     time: data.timeBooking
                 },
             }).then(async (schedule) => {
                 if (schedule && schedule.sumBooking < schedule.maxBooking) {
-                    let patient = await db.Patient.create(data);
-                    data.patientId = patient.id;
+                    let customer = await db.Customer.create(data);
+                    data.customerId = customer.id;
                     await db.ExtraInfo.create(data);
-
+                    
                     //tăng sumBooking
                     let sum = +schedule.sumBooking;
                     await schedule.update({ sumBooking: sum + 1 });
 
-                    let doctor = await db.User.findOne({
-                        where: { id: patient.doctorId },
+                    let merchant = await db.User.findOne({
+                        where: { id: customer.merchantId },
                         attributes: [ 'name', 'avatar' ]
                     });
 
                     //update logs
                     let logs = {
-                        patientId: patient.id,
-                        content: "The patient made an appointment from the system ",
+                        customerId: customer.id,
+                        content: "The customer made an appointment from the system ",
                         createdAt: Date.now()
                     };
 
                     await db.SupporterLog.create(logs);
 
                     let dataSend = {
-                        time: patient.timeBooking,
-                        date: patient.dateBooking,
-                        doctor: doctor.name
+                        time: customer.timeBooking,
+                        date: customer.dateBooking,
+                        merchant: merchant.name
                     };
 
-                    let isEmailSend = await mailer.sendEmailNormal(patient.email, transMailBookingNew.subject, transMailBookingNew.template(dataSend));
+                    let isEmailSend = await mailer.sendEmailNormal(customer.email, transMailBookingNew.subject, transMailBookingNew.template(dataSend));
                     if (!isEmailSend) {
-                        console.log("An error occurs when sending an email to: " + patient.email);
+                        console.log("An error occurs when sending an email to: " + customer.email);
                         console.log(isEmailSend);
                     }
 
-                    resolve(patient);
+                    resolve(customer);
                 } else {
                     resolve("Max booking")
                 }
@@ -217,26 +215,26 @@ let createNewPatient = (data) => {
     }));
 };
 
-let getDetailPatient = (id) => {
+let getDetailCustomer = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let patient = await db.Patient.findOne({
+            let customer = await db.Customer.findOne({
                 where: { id: id },
                 include: { model: db.ExtraInfo, required: false }
             });
-            resolve(patient)
+            resolve(customer)
         } catch (e) {
             reject(e);
         }
     });
 };
 
-let getLogsPatient = (id) => {
+let getLogsCustomer = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let logs = await db.SupporterLog.findAll({
                 where: {
-                    patientId: id
+                    customerId: id
                 }
             });
 
@@ -278,10 +276,10 @@ let getComments = () => {
 };
 module.exports = {
     getInfoBooking: getInfoBooking,
-    getForPatientsTabs: getForPatientsTabs,
-    changeStatusPatient: changeStatusPatient,
-    createNewPatient: createNewPatient,
-    getDetailPatient: getDetailPatient,
-    getLogsPatient: getLogsPatient,
+    getForCustomersTabs: getForCustomersTabs,
+    changeStatusCustomer: changeStatusCustomer,
+    createNewCustomer: createNewCustomer,
+    getDetailCustomer: getDetailCustomer,
+    getLogsCustomer: getLogsCustomer,
     getComments: getComments
 };

@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
     const ExtraInfo = sequelize.define('ExtraInfo', {
-        patientId: DataTypes.INTEGER,
+        customerId: DataTypes.INTEGER,
         historyBreath: DataTypes.TEXT,
         placeId: DataTypes.INTEGER,
         oldForms: DataTypes.TEXT,
@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         deletedAt: DataTypes.DATE,
     }, {});
     ExtraInfo.associate = function(models) {
-        models.ExtraInfo.belongsTo(models.Patient, { foreignKey: 'patientId' });
+        models.ExtraInfo.belongsTo(models.Customer, { foreignKey: 'customerId' });
         models.ExtraInfo.belongsTo(models.Place, { foreignKey: 'placeId' });
     };
     return ExtraInfo;

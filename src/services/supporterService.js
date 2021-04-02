@@ -31,7 +31,7 @@ let postCreatePost = (item) => {
 
             // ko đồng bộ các bài đăng dành giới thiệu bác sĩ or chuyên khoa or phòng khám
             //syncs to elastic
-            if (item.forDoctorId === '-1' && item.forSpecializationId === '-1') {
+            if (item.forMerchantId === '-1' && item.forSpecializationId === '-1') {
                 let plainText = removeMd(item.contentMarkdown);
                 plainText.replace(/(?:\r\n|\r|\\n)/g, ' ');
                 let data = {
@@ -54,7 +54,7 @@ let getDetailPostPage = (id) => {
         try {
             let post = await db.Post.findOne({
                 where: { id: id },
-                attributes: [ 'id', 'title', 'contentHTML', 'contentMarkdown', 'forDoctorId', 'forSpecializationId' ]
+                attributes: [ 'id', 'title', 'contentHTML', 'contentMarkdown', 'forMerchantId', 'forSpecializationId' ]
             });
             if (!post) {
                 reject(`Can't get post with id=${id}`);
@@ -98,7 +98,7 @@ let getPostsPagination = (page, limit, role) => {
             } else {
                 posts = await db.Post.findAndCountAll({
                     where: {
-                        forDoctorId: -1,
+                        forMerchantId: -1,
                         forSpecializationId: -1
                     },
                     offset: (page - 1) * limit,
@@ -135,12 +135,12 @@ let deletePostById = (id) => {
         try {
             let post = await db.Post.findOne({
                 where: { id: id },
-                attributes: [ 'id', 'forDoctorId', 'forSpecializationId' ]
+                attributes: [ 'id', 'forMerchantId', 'forSpecializationId' ]
             });
 
             // chỉ delete bài đăng y khoa
             //sync to elasticsearch
-            if (post.forDoctorId === -1 && post.forSpecializationId === -1) {
+            if (post.forMerchantId === -1 && post.forSpecializationId === -1) {
                 await syncElastic.deletePost(post.id);
             }
 
@@ -157,13 +157,13 @@ let putUpdatePost = (item) => {
         try {
             let post = await db.Post.findOne({
                 where: { id: item.id },
-                attributes: [ 'id', 'forDoctorId', 'forSpecializationId' ]
+                attributes: [ 'id', 'forMerchantId', 'forSpecializationId' ]
             });
             await post.update(item);
 
             //chỉ update bài đăng y khoa
             //sync to elasticsearch
-            if (item.forDoctorId === '-1'  && item.forSpecializationId === '-1') {
+            if (item.forMerchantId === '-1'  && item.forSpecializationId === '-1') {
                 let plainText = removeMd(item.contentMarkdown);
                 plainText.replace(/(?:\r\n|\r|\\n)/g, ' ');
                 let data = {

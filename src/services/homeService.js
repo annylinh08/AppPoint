@@ -19,7 +19,7 @@ let getSpecializations = () => {
 
 
 
-let getDoctors = () => {
+let getMerchants = () => {
     return new Promise((async (resolve, reject) => {
         resolve(true)
 
@@ -32,7 +32,7 @@ let getPosts = (LIMIT_POST) => {
             //chỉ get bài đăng y khoa
             let posts = await db.Post.findAll({
                 where:{
-                    forDoctorId: -1,
+                    forMerchantId: -1,
                     forSpecializationId: -1
                 },
                 order: [ [ 'createdAt', 'DESC' ] ],
@@ -56,7 +56,7 @@ let getPosts = (LIMIT_POST) => {
 let postSearchHomePage = (keyword) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let doctors = await  db.User.findAll({
+            let merchants = await  db.User.findAll({
                 where:{
                     roleId: 2,
                     name: {
@@ -77,7 +77,7 @@ let postSearchHomePage = (keyword) => {
 
 
         resolve({
-            doctors: doctors,
+            merchants: merchants,
             specializations: specializations
         })
         } catch (e) {
@@ -89,17 +89,17 @@ let postSearchHomePage = (keyword) => {
 
 
 
-let getDataPageAllDoctors = ()=>{
+let getDataPageAllMerchants = ()=>{
     return new Promise(async (resolve, reject) => {
         try{
-            let doctors = await db.User.findAll({
+            let merchants = await db.User.findAll({
                 where:{
                     roleId: 2
                 },
                 attributes:['id','name','avatar']
             });
 
-            resolve(doctors);
+            resolve(merchants);
         }catch (e) {
             reject(e);
         }
@@ -122,9 +122,9 @@ let getDataPageAllSpecializations = ()=>{
 
 module.exports = {
     getSpecializations: getSpecializations,
-    getDoctors: getDoctors,
+    getMerchants: getMerchants,
     getPosts: getPosts,
     postSearchHomePage: postSearchHomePage,
-    getDataPageAllDoctors: getDataPageAllDoctors,
+    getDataPageAllMerchants: getDataPageAllMerchants,
     getDataPageAllSpecializations: getDataPageAllSpecializations
 };

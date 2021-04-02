@@ -2,7 +2,7 @@ require('dotenv').config();
 import homeService from "../services/homeService";
 import userService from "../services/userService";
 import supporterService from "../services/supporterService";
-import patientService from "../services/patientService";
+import customerService from "../services/customerService";
 
 const statusNewId = 4;
 const statusPendingId = 3;
@@ -10,9 +10,9 @@ const statusFailedId = 2;
 const statusSuccessId = 1;
 
 
-let getNewPatients = (req, res) => {
-    //render data = js/ getForPatientsTabs
-    return res.render('main/users/admins/managePatient.ejs', {
+let getNewCustomers = (req, res) => {
+    //render data = js/ getForCustomersTabs
+    return res.render('main/users/admins/manageCustomer.ejs', {
         user: req.user
     })
 };
@@ -27,11 +27,11 @@ let getAllPosts = async (req, res) => {
 };
 
 let getCreatePost = async (req, res) => {
-    let doctors = await userService.getInfoDoctors();
+    let merchants = await userService.getInfoMerchants();
     let specializations = await homeService.getSpecializations();
     return res.render('main/users/admins/createPost.ejs', {
         user: req.user,
-        doctors: doctors,
+        merchants: merchants,
         specializations: specializations
     });
 };
@@ -84,9 +84,9 @@ let getPostsPagination = async (req, res) => {
     }
 };
 
-let getForPatientsTabs = async (req, res) => {
+let getForCustomersTabs = async (req, res) => {
     try {
-        let object = await patientService.getForPatientsTabs();
+        let object = await customerService.getForCustomersTabs();
         return res.status(200).json({
             'message': 'success',
             'object': object
@@ -97,9 +97,9 @@ let getForPatientsTabs = async (req, res) => {
     }
 };
 
-let postChangeStatusPatient = async (req, res) => {
+let postChangeStatusCustomer = async (req, res) => {
     try {
-        let id = req.body.patientId;
+        let id = req.body.customerId;
         let status = req.body.status;
         let statusId = '';
         let content = '';
@@ -126,14 +126,14 @@ let postChangeStatusPatient = async (req, res) => {
 
         let logs = {
             supporterId: req.user.id,
-            patientId: id,
+            customerId: id,
             content: content
         };
 
-        let patient = await patientService.changeStatusPatient(data, logs);
+        let customer = await customerService.changeStatusCustomer(data, logs);
         return res.status(200).json({
             'message': 'success',
-            'patient': patient
+            'customer': customer
         })
 
     } catch (e) {
@@ -144,8 +144,8 @@ let postChangeStatusPatient = async (req, res) => {
 
 let getManageCustomersPage = async (req, res) => {
     try {
-        let comments = await patientService.getComments();
-        return res.render("main/users/admins/manageCustomer.ejs", {
+        let comments = await customerService.getComments();
+        return res.render("main/users/admins/manageFeedback.ejs", {
             user: req.user,
             comments: comments
         });
@@ -154,9 +154,9 @@ let getManageCustomersPage = async (req, res) => {
     }
 };
 
-let getLogsPatient = async (req, res) => {
+let getLogsCustomer = async (req, res) => {
     try {
-        let logs = await patientService.getLogsPatient(req.body.patientId);
+        let logs = await customerService.getLogsCustomer(req.body.customerId);
         return res.status(200).json(logs);
     } catch (e) {
         console.log(e);
@@ -174,15 +174,15 @@ let postDoneComment = async (req, res) => {
     }
 };
 module.exports = {
-    getNewPatients: getNewPatients,
+    getNewCustomers: getNewCustomers,
     getManagePosts: getManagePosts,
     getCreatePost: getCreatePost,
     postCreatePost: postCreatePost,
     getAllPosts: getAllPosts,
     getPostsPagination: getPostsPagination,
-    getForPatientsTabs: getForPatientsTabs,
-    postChangeStatusPatient: postChangeStatusPatient,
+    getForCustomersTabs: getForCustomersTabs,
+    postChangeStatusCustomer: postChangeStatusCustomer,
     getManageCustomersPage: getManageCustomersPage,
-    getLogsPatient: getLogsPatient,
+    getLogsCustomer: getLogsCustomer,
     postDoneComment: postDoneComment
 };

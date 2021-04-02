@@ -176,10 +176,10 @@ function showModalSettingUser() {
     });
 }
 
-function createNewDoctor() {
-    $('#createNewDoctor').on('click', function(e) {
+function createNewMerchant() {
+    $('#createNewMerchant').on('click', function(e) {
         e.preventDefault();
-        let formData = new FormData($('form#formCreateNewDoctor')[0]);
+        let formData = new FormData($('form#formCreateNewMerchant')[0]);
         let data = {};
         for (let pair of formData.entries()) {
             data[pair[0]] = pair[1]
@@ -189,7 +189,7 @@ function createNewDoctor() {
             url: `${window.location.origin}/admin/merchant/create`,
             data: data,
             success: function(data) {
-                alert('Create a new doctor succeeds');
+                alert('Create a new merchant succeeds');
                 window.location.href = `${window.location.origin}/users/manage/merchant`;
             },
             error: function(error) {
@@ -200,13 +200,13 @@ function createNewDoctor() {
     });
 }
 
-function deleteDoctorById() {
-    $('.delete-doctor-info').on('click', function(e) {
-        if (!confirm('Delete this doctor?')) {
+function deleteMerchantById() {
+    $('.delete-merchant-info').on('click', function(e) {
+        if (!confirm('Delete this merchant?')) {
             return
         }
 
-        let id = $(this).data('doctor-id');
+        let id = $(this).data('merchant-id');
         let node = this;
         $.ajax({
             method: 'DELETE',
@@ -224,38 +224,38 @@ function deleteDoctorById() {
     });
 }
 
-function showModalInfoDoctor() {
+function showModalInfoMerchant() {
     $('.show-merchant-info').on('click', function(e) {
         e.preventDefault();
-        let id = $(this).data('doctor-id');
+        let id = $(this).data('merchant-id');
 
         $.ajax({
             method: 'POST',
             url: `${window.location.origin}/api/get-info-merchant-by-id`,
             data: { id: id },
             success: function(data) {
-                $('#imageDoctor').empty();
+                $('#imageMerchant').empty();
 
-                $('#nameDoctor').val(data.doctor.name);
-                if (data.doctor.phone) {
-                    $('#phoneDoctor').val(data.doctor.phone);
+                $('#nameMerchant').val(data.merchant.name);
+                if (data.merchant.phone) {
+                    $('#phoneMerchant').val(data.merchant.phone);
                 } else {
-                    $('#phoneDoctor').val('Has not been updated');
+                    $('#phoneMerchant').val('Has not been updated');
                 }
-                if (data.doctor.address) {
-                    $('#addressDoctor').val(data.doctor.address);
+                if (data.merchant.address) {
+                    $('#addressMerchant').val(data.merchant.address);
                 } else {
-                    $('#addressDoctor').val('Has not been updated');
+                    $('#addressMerchant').val('Has not been updated');
                 }
-                $('#specializationDoctor').val(data.doctor.specializationName);
-                $('#clinicDoctor').val(data.doctor.clinicName);
-                if (data.doctor.avatar) {
-                    $('#imageDoctor').prepend(`<img class="img-info-clinic" src="/images/users/${data.doctor.avatar}" />`)
+                $('#specializationMerchant').val(data.merchant.specializationName);
+                $('#clinicMerchant').val(data.merchant.clinicName);
+                if (data.merchant.avatar) {
+                    $('#imageMerchant').prepend(`<img class="img-info-clinic" src="/images/users/${data.merchant.avatar}" />`)
                 } else {
-                    $('#imageDoctor').text('Has not been updated')
+                    $('#imageMerchant').text('Has not been updated')
                 }
 
-                $('#modalInfoDoctor').modal('show');
+                $('#modalInfoMerchant').modal('show');
             },
             error: function(error) {
                 alertify.error('An error occurs, please try again later!');
@@ -266,30 +266,30 @@ function showModalInfoDoctor() {
 
 }
 
-function updateDoctor() {
-    $('#btnUpdateDoctor').on('click', function(e) {
-        let doctorId = $('#btnUpdateDoctor').data('doctor-id');
+function updateMerchant() {
+    $('#btnUpdateMerchant').on('click', function(e) {
+        let merchantId = $('#btnUpdateMerchant').data('merchant-id');
 
-        let formData = new FormData($('form#formUpdateDoctor')[0]);
+        let formData = new FormData($('form#formUpdateMerchant')[0]);
         //contain file upload
         if ($('#image-clinic').val()) {
             formData.append('avatar', document.getElementById('image-clinic').files[0]);
-            formData.append('id', doctorId);
-            handleUpdateDoctorNormal(formData);
+            formData.append('id', merchantId);
+            handleUpdateMerchantNormal(formData);
         } else {
             // create without file upload
             let data = {
-                id: doctorId,
+                id: merchantId,
             };
             for (let pair of formData.entries()) {
                 data[pair[0]] = pair[1]
             }
-            handleUpdateDoctorWithoutFile(data);
+            handleUpdateMerchantWithoutFile(data);
         }
     });
 }
 
-function handleUpdateDoctorNormal(formData) {
+function handleUpdateMerchantNormal(formData) {
     $.ajax({
         method: "PUT",
         url: `${window.location.origin}/admin/merchant/update`,
@@ -308,7 +308,7 @@ function handleUpdateDoctorNormal(formData) {
     });
 }
 
-function handleUpdateDoctorWithoutFile(data) {
+function handleUpdateMerchantWithoutFile(data) {
     $.ajax({
         method: "PUT",
         url: `${window.location.origin}/admin/merchant/update-without-file`,
@@ -463,8 +463,8 @@ function updatePost(markdown, converter) {
     });
 }
 
-function createScheduleByDoctor(scheduleArr) {
-    $("#createNewScheduleDoctor").on("click", function() {
+function createScheduleByMerchant(scheduleArr) {
+    $("#createNewScheduleMerchant").on("click", function() {
         if (scheduleArr.length === 0) {
             alertify.error('Have not selected a plan to save');
             return
@@ -561,15 +561,15 @@ function stringToDate(_date, _format, _delimiter) {
 
 }
 
-function loadNewPatientsForSupporter() {
+function loadNewCustomersForSupporter() {
     $.ajax({
         url: `${window.location.origin}/supporter/get-customers-for-tabs`,
         method: 'POST',
         success: function(data) {
-            let countNew = data.object.newPatients.length;
-            let countPending = data.object.pendingPatients.length;
-            let countConfirmed = data.object.confirmedPatients.length;
-            let countCanceled = data.object.canceledPatients.length;
+            let countNew = data.object.newCustomers.length;
+            let countPending = data.object.pendingCustomers.length;
+            let countConfirmed = data.object.confirmedCustomers.length;
+            let countCanceled = data.object.canceledCustomers.length;
 
             $('#count-new').text(`${countNew}`);
             $('#count-need').text(`${countPending}`);
@@ -577,68 +577,68 @@ function loadNewPatientsForSupporter() {
             $('#count-canceled').text(`${countCanceled}`);
 
             let htmlNew, htmlPending, htmlConfirmed, htmlCanceled = '';
-            data.object.newPatients.forEach((patient) => {
+            data.object.newCustomers.forEach((customer) => {
                 htmlNew += `
                 <tr>
-                    <td> ${patient.id} - ${patient.name}   </td>
-                    <td> ${patient.phone}     </td>
-                    <td> ${patient.email}     </td>
-                    <td>${convertStringToDateClient(patient.updatedAt)}      </td>
+                    <td> ${customer.id} - ${customer.name}   </td>
+                    <td> ${customer.phone}     </td>
+                    <td> ${customer.email}     </td>
+                    <td>${convertStringToDateClient(customer.updatedAt)}      </td>
                     <td> 
-                    <button type="button"  data-patient-id="${patient.id}" class="ml-3 btn btn-primary btn-new-patient-ok"> Receive</button>
-                    <button  type="button" data-patient-id="${patient.id}" class="ml-3 btn btn-danger btn-new-patient-cancel"> Cancel </button>
+                    <button type="button"  data-customer-id="${customer.id}" class="ml-3 btn btn-primary btn-new-customer-ok"> Receive</button>
+                    <button  type="button" data-customer-id="${customer.id}" class="ml-3 btn btn-danger btn-new-customer-cancel"> Cancel </button>
                     </td>
                 </tr>
                 `;
             });
 
-            data.object.pendingPatients.forEach((patient) => {
+            data.object.pendingCustomers.forEach((customer) => {
                 htmlPending += `
                 <tr>
-                    <td> ${patient.id} - ${patient.name}   </td>
-                    <td> ${patient.phone}     </td>
-                    <td> ${patient.email}     </td>
-                    <td> ${convertStringToDateClient(patient.updatedAt)}      </td>
+                    <td> ${customer.id} - ${customer.name}   </td>
+                    <td> ${customer.phone}     </td>
+                    <td> ${customer.email}     </td>
+                    <td> ${convertStringToDateClient(customer.updatedAt)}      </td>
                     <td> 
-                    <button  data-patient-id="${patient.id}"  class="ml-3 btn btn-warning btn-pending-patient">Confirm</button>
-                    <button  type="button" data-patient-id="${patient.id}" class="ml-3 btn btn-danger btn-pending-patient-cancel"> Cancel </button>
+                    <button  data-customer-id="${customer.id}"  class="ml-3 btn btn-warning btn-pending-customer">Confirm</button>
+                    <button  type="button" data-customer-id="${customer.id}" class="ml-3 btn btn-danger btn-pending-customer-cancel"> Cancel </button>
                     </td>
                 </tr>
                 `;
             });
 
-            data.object.confirmedPatients.forEach((patient) => {
+            data.object.confirmedCustomers.forEach((customer) => {
                 htmlConfirmed += `
                 <tr>
-                    <td> ${patient.id} - ${patient.name}   </td>
-                    <td> ${patient.phone}     </td>
-                    <td> ${patient.email}     </td>
-                    <td> ${convertStringToDateClient(patient.updatedAt)}     </td>
+                    <td> ${customer.id} - ${customer.name}   </td>
+                    <td> ${customer.phone}     </td>
+                    <td> ${customer.email}     </td>
+                    <td> ${convertStringToDateClient(customer.updatedAt)}     </td>
                     <td> 
-                    <button  type="button" data-patient-id="${patient.id}"  class="ml-3 btn btn-info btn-confirmed-patient"> Information</button>
+                    <button  type="button" data-customer-id="${customer.id}"  class="ml-3 btn btn-info btn-confirmed-customer"> Information</button>
                     </td>
                 </tr>
                 `;
             });
 
-            data.object.canceledPatients.forEach((patient) => {
+            data.object.canceledCustomers.forEach((customer) => {
                 htmlCanceled += `
                 <tr>
-                    <td> ${patient.id} - ${patient.name}   </td>
-                    <td> ${patient.phone}     </td>
-                    <td> ${patient.email}     </td>
-                    <td> ${convertStringToDateClient(patient.updatedAt)} </td>
+                    <td> ${customer.id} - ${customer.name}   </td>
+                    <td> ${customer.phone}     </td>
+                    <td> ${customer.email}     </td>
+                    <td> ${convertStringToDateClient(customer.updatedAt)} </td>
                     <td> 
-                    <button   data-patient-id="${patient.id}"  class="ml-3 btn btn-primary btn-history-cancel-patient">History</button>
+                    <button   data-customer-id="${customer.id}"  class="ml-3 btn btn-primary btn-history-cancel-customer">History</button>
                     </td>
                 </tr>
                 `;
             });
 
-            $('#tableNewPatients tbody').append(htmlNew);
-            $('#tableNeedConfirmPatients tbody').append(htmlPending);
-            $('#tableConfirmedPatients tbody').append(htmlConfirmed);
-            $('#tableCancelPatients tbody').append(htmlCanceled);
+            $('#tableNewCustomers tbody').append(htmlNew);
+            $('#tableNeedConfirmCustomers tbody').append(htmlPending);
+            $('#tableConfirmedCustomers tbody').append(htmlConfirmed);
+            $('#tableCancelCustomers tbody').append(htmlCanceled);
         },
         error: function(error) {
             console.log(error);
@@ -647,14 +647,14 @@ function loadNewPatientsForSupporter() {
     })
 }
 
-function handleBtnNewPatientOk() {
-    $("#tableNewPatients").on("click", ".btn-new-patient-ok", function(e) {
-        if (!confirm('Do you want to confirm admission of this patient?')) {
+function handleBtnNewCustomerOk() {
+    $("#tableNewCustomers").on("click", ".btn-new-customer-ok", function(e) {
+        if (!confirm('Do you want to confirm admission of this customer?')) {
             return
         }
         let countNew = +$('#count-new').text();
         let countPending = +$('#count-need').text();
-        let patientId = $(this).data('patient-id');
+        let customerId = $(this).data('customer-id');
         this.closest("tr").remove();
         countNew--;
         countPending++;
@@ -664,10 +664,10 @@ function handleBtnNewPatientOk() {
         $.ajax({
             url: `${window.location.origin}/supporter/change-status-customer`,
             method: 'POST',
-            data: { patientId: patientId, status: 'pending' },
+            data: { customerId: customerId, status: 'pending' },
             success: function(data) {
-                let patient = data.patient;
-                addNewRowTablePending(patient);
+                let customer = data.customer;
+                addNewRowTablePending(customer);
             },
             error: function(error) {
                 console.log(error);
@@ -677,37 +677,37 @@ function handleBtnNewPatientOk() {
     });
 }
 
-function handleBtnNewPatientCancel() {
-    $("#tableNewPatients").on("click", ".btn-new-patient-cancel", function(e) {
-        $('#btnCancelBookingPatient').attr('data-patient-id', $(this).data('patient-id'));
-        $('#btnCancelBookingPatient').attr('data-type', 'new-patient-cancel');
+function handleBtnNewCustomerCancel() {
+    $("#tableNewCustomers").on("click", ".btn-new-customer-cancel", function(e) {
+        $('#btnCancelBookingCustomer').attr('data-customer-id', $(this).data('customer-id'));
+        $('#btnCancelBookingCustomer').attr('data-type', 'new-customer-cancel');
         $('#modalCancelBooking').modal('show');
     });
 }
 
-function callAjaxRenderModalInfo(patientId, option) {
+function callAjaxRenderModalInfo(customerId, option) {
     $.ajax({
         method: 'POST',
         url: `${window.location.origin}/api/get-detail-customer-by-id`,
-        data: { patientId: patientId },
+        data: { customerId: customerId },
         success: function(data) {
-            $('#patientName').val(data.name);
-            $('#btn-confirm-patient-done').attr('data-patient-id', data.id);
-            $('#patientPhone').val(data.phone);
-            $('#patientEmail').val(data.email);
-            $('#patientDate').val(data.dateBooking);
-            $('#patientTime').val(data.timeBooking);
-            $('#patientReason').text(data.description);
-            $('#patientAddress').text(data.address);
+            $('#customerName').val(data.name);
+            $('#btn-confirm-customer-done').attr('data-customer-id', data.id);
+            $('#customerPhone').val(data.phone);
+            $('#customerEmail').val(data.email);
+            $('#customerDate').val(data.dateBooking);
+            $('#customerTime').val(data.timeBooking);
+            $('#customerReason').text(data.description);
+            $('#customerAddress').text(data.address);
             if (data.ExtraInfo) {
-                $('#patientHistoryBreath').text(data.ExtraInfo.historyBreath);
-                $('#patientMoreInfo').text(data.ExtraInfo.moreInfo);
+                $('#customerHistoryBreath').text(data.ExtraInfo.historyBreath);
+                $('#customerMoreInfo').text(data.ExtraInfo.moreInfo);
             }
             if (option) {
-                $('#btn-confirm-patient-done').css('display', 'none');
-                $('#btn-cancel-patient').text("OK");
+                $('#btn-confirm-customer-done').css('display', 'none');
+                $('#btn-cancel-customer').text("OK");
             }
-            $('#modalDetailPatient').modal('show');
+            $('#modalDetailCustomer').modal('show');
         },
         error: function(err) {
             console.log(error);
@@ -716,98 +716,98 @@ function callAjaxRenderModalInfo(patientId, option) {
     });
 }
 
-function handleBtnPendingPatient() {
-    $("#tableNeedConfirmPatients").on("click", ".btn-pending-patient", function(e) {
-        let patientId = $(this).data('patient-id');
+function handleBtnPendingCustomer() {
+    $("#tableNeedConfirmCustomers").on("click", ".btn-pending-customer", function(e) {
+        let customerId = $(this).data('customer-id');
         let option = false;
-        callAjaxRenderModalInfo(patientId, option);
+        callAjaxRenderModalInfo(customerId, option);
     });
 }
 
 function handleBtnPendingCancel() {
-    $("#tableNeedConfirmPatients").on("click", ".btn-pending-patient-cancel", function(e) {
-        $('#btnCancelBookingPatient').attr('data-patient-id', $(this).data('patient-id'));
-        $('#btnCancelBookingPatient').attr('data-type', 'pending-patient-cancel');
+    $("#tableNeedConfirmCustomers").on("click", ".btn-pending-customer-cancel", function(e) {
+        $('#btnCancelBookingCustomer').attr('data-customer-id', $(this).data('customer-id'));
+        $('#btnCancelBookingCustomer').attr('data-type', 'pending-customer-cancel');
         $('#modalCancelBooking').modal('show');
     });
 }
 
-function addNewRowTablePending(patient) {
+function addNewRowTablePending(customer) {
     let htmlPending = `
                  <tr>
-                    <td> ${patient.id} - ${patient.name}   </td>
-                    <td> ${patient.phone}     </td>
-                    <td> ${patient.email}     </td>
-                    <td> ${convertStringToDateClient(patient.updatedAt)}     </td>
+                    <td> ${customer.id} - ${customer.name}   </td>
+                    <td> ${customer.phone}     </td>
+                    <td> ${customer.email}     </td>
+                    <td> ${convertStringToDateClient(customer.updatedAt)}     </td>
                     <td> 
-                    <button  data-patient-id="${patient.id}"  class="ml-3 btn btn-warning btn-pending-patient">Confirm</button>
-                    <button  type="button" data-patient-id="${patient.id}" class="ml-3 btn btn-danger btn-pending-patient-cancel"> Cancel </button>
+                    <button  data-customer-id="${customer.id}"  class="ml-3 btn btn-warning btn-pending-customer">Confirm</button>
+                    <button  type="button" data-customer-id="${customer.id}" class="ml-3 btn btn-danger btn-pending-customer-cancel"> Cancel </button>
                     </td>
                 </tr>
                
                 `;
-    $('#tableNeedConfirmPatients tbody').prepend(htmlPending);
+    $('#tableNeedConfirmCustomers tbody').prepend(htmlPending);
 }
 
-function addNewRowTableConfirmed(patient) {
+function addNewRowTableConfirmed(customer) {
     let htmlConfirmed = `
                 <tr>
-                    <td> ${patient.id} - ${patient.name}   </td>
-                    <td> ${patient.phone}     </td>
-                    <td> ${patient.email}     </td>
-                    <td> ${convertStringToDateClient(patient.updatedAt)}     </td>
+                    <td> ${customer.id} - ${customer.name}   </td>
+                    <td> ${customer.phone}     </td>
+                    <td> ${customer.email}     </td>
+                    <td> ${convertStringToDateClient(customer.updatedAt)}     </td>
                     <td> 
-                    <button  type="button" data-patient-id="${patient.id}"  class="ml-3 btn btn-info btn-confirmed-patient"> Information</button>
+                    <button  type="button" data-customer-id="${customer.id}"  class="ml-3 btn btn-info btn-confirmed-customer"> Information</button>
                     </td>
                 </tr>
                 `;
-    $('#tableConfirmedPatients tbody').prepend(htmlConfirmed);
+    $('#tableConfirmedCustomers tbody').prepend(htmlConfirmed);
 
 }
 
-function addNewRowTableCanceled(patient) {
+function addNewRowTableCanceled(customer) {
     let htmlPending = `
                   <tr>
-                    <td> ${patient.id} - ${patient.name}   </td>
-                    <td> ${patient.phone}     </td>
-                    <td> ${patient.email}     </td>
-                    <td> ${convertStringToDateClient(patient.updatedAt)} </td>
+                    <td> ${customer.id} - ${customer.name}   </td>
+                    <td> ${customer.phone}     </td>
+                    <td> ${customer.email}     </td>
+                    <td> ${convertStringToDateClient(customer.updatedAt)} </td>
                     <td> 
-                    <button   data-patient-id="${patient.id}"  class="ml-3 btn btn-primary btn-history-cancel-patient">History</button>
+                    <button   data-customer-id="${customer.id}"  class="ml-3 btn btn-primary btn-history-cancel-customer">History</button>
                     </td>
                 </tr>
                
                 `;
-    $('#tableCancelPatients tbody').prepend(htmlPending);
+    $('#tableCancelCustomers tbody').prepend(htmlPending);
 }
 
 function convertStringToDateClient(string) {
     return moment(Date.parse(string)).format("DD/MM/YYYY, HH:mm A");
 }
 
-function handleAfterCallingPatient() {
-    $('#btn-confirm-patient-done').on('click', function(e) {
-        if (!confirm('Have you phoned to confirm whether the patient has an appointment?')) {
+function handleAfterCallingCustomer() {
+    $('#btn-confirm-customer-done').on('click', function(e) {
+        if (!confirm('Have you phoned to confirm whether the customer has an appointment?')) {
             return;
         }
         let countPending = +$('#count-need').text();
         let countConfirmed = +$('#count-confirmed').text();
         countPending--;
         countConfirmed++;
-        $('#modalDetailPatient').modal('hide');
-        let patientId = $('#btn-confirm-patient-done').attr('data-patient-id');
-        $('#tableNeedConfirmPatients tbody').find(`.btn-pending-patient[data-patient-id=${patientId}]`).closest("tr").remove();
+        $('#modalDetailCustomer').modal('hide');
+        let customerId = $('#btn-confirm-customer-done').attr('data-customer-id');
+        $('#tableNeedConfirmCustomers tbody').find(`.btn-pending-customer[data-customer-id=${customerId}]`).closest("tr").remove();
         $('#count-need').text(countPending);
         $('#count-confirmed').text(countConfirmed);
 
         $.ajax({
             url: `${window.location.origin}/supporter/change-status-customer`,
             method: 'POST',
-            data: { patientId: patientId, status: 'confirmed' },
+            data: { customerId: customerId, status: 'confirmed' },
             success: function(data) {
                 console.log(data)
-                let patient = data.patient;
-                addNewRowTableConfirmed(patient);
+                let customer = data.customer;
+                addNewRowTableConfirmed(customer);
             },
             error: function(error) {
                 console.log(error);
@@ -817,16 +817,16 @@ function handleAfterCallingPatient() {
     });
 }
 
-function handleViewInfoPatientBooked() {
-    $("#tableConfirmedPatients").on("click", ".btn-confirmed-patient", function(e) {
-        let patientId = $(this).data('patient-id');
+function handleViewInfoCustomerBooked() {
+    $("#tableConfirmedCustomers").on("click", ".btn-confirmed-customer", function(e) {
+        let customerId = $(this).data('customer-id');
         let option = true;
-        callAjaxRenderModalInfo(patientId, option);
+        callAjaxRenderModalInfo(customerId, option);
     });
 }
 
 function handleCancelBtn() {
-    $('#btnCancelBookingPatient').on('click', function(e) {
+    $('#btnCancelBookingCustomer').on('click', function(e) {
         let formData = new FormData($('form#formCancelBooking')[0]);
         let data = {};
         let text = '';
@@ -841,21 +841,21 @@ function handleCancelBtn() {
             }
             text = `Other reason: ${$('#otherReason').val()} `;
         } else if (data.reasonCancel === 'reason2') {
-            text = 'The patient canceled the schedule';
+            text = 'The customer canceled the schedule';
         } else {
             text = 'Spam clinic appointment, not real'
         }
 
-        let patientId = $('#btnCancelBookingPatient').attr('data-patient-id');
+        let customerId = $('#btnCancelBookingCustomer').attr('data-customer-id');
 
-        let type = $('#btnCancelBookingPatient').attr('data-type');
+        let type = $('#btnCancelBookingCustomer').attr('data-type');
 
-        if (type === 'pending-patient-cancel') {
+        if (type === 'pending-customer-cancel') {
             let countPending = +$('#count-need').text();
             let countCancel = +$('#count-canceled').text();
             countPending--;
             countCancel++;
-            $('#tableNeedConfirmPatients tbody').find(`.btn-pending-patient-cancel[data-patient-id=${patientId}]`).closest("tr").remove();
+            $('#tableNeedConfirmCustomers tbody').find(`.btn-pending-customer-cancel[data-customer-id=${customerId}]`).closest("tr").remove();
             $('#count-need').text(countPending);
             $('#count-canceled').text(countCancel);
         } else {
@@ -863,7 +863,7 @@ function handleCancelBtn() {
             let countCancel = +$('#count-canceled').text();
             countNew--;
             countCancel++;
-            $('#tableNewPatients tbody').find(`.btn-new-patient-cancel[data-patient-id=${patientId}]`).closest("tr").remove();
+            $('#tableNewCustomers tbody').find(`.btn-new-customer-cancel[data-customer-id=${customerId}]`).closest("tr").remove();
             $('#count-new').text(countNew);
             $('#count-canceled').text(countCancel);
         }
@@ -873,10 +873,10 @@ function handleCancelBtn() {
         $.ajax({
             url: `${window.location.origin}/supporter/change-status-customer`,
             method: 'POST',
-            data: { patientId: patientId, status: 'failed', reason: text },
+            data: { customerId: customerId, status: 'failed', reason: text },
             success: function(data) {
-                let patient = data.patient;
-                addNewRowTableCanceled(patient);
+                let customer = data.customer;
+                addNewRowTableCanceled(customer);
             },
             error: function(error) {
                 console.log(error);
@@ -888,13 +888,13 @@ function handleCancelBtn() {
 }
 
 function handleBtnViewHistory() {
-    $('#tableCancelPatients').on('click', '.btn-history-cancel-patient', function() {
-        let patientId = $(this).data('patient-id');
-        $('#btn-view-history').attr('data-patient-id', patientId);
+    $('#tableCancelCustomers').on('click', '.btn-history-cancel-customer', function() {
+        let customerId = $(this).data('customer-id');
+        $('#btn-view-history').attr('data-customer-id', customerId);
         $.ajax({
             url: `${window.location.origin}/supporter/get-logs-customer`,
             method: 'POST',
-            data: { patientId: patientId },
+            data: { customerId: customerId },
             success: function(data) {
                 $("#contentHistory").empty();
 
@@ -926,31 +926,31 @@ function handleBtnViewHistory() {
     })
 }
 
-function handleDoctorViewInfoPatient() {
-    $('.doctor-view-detail').on('click', function(e) {
-        let patientId = $(this).attr('data-patient-id');
+function handleMerchantViewInfoCustomer() {
+    $('.merchant-view-detail').on('click', function(e) {
+        let customerId = $(this).attr('data-customer-id');
         $.ajax({
             method: 'POST',
             url: `${window.location.origin}/api/get-detail-customer-by-id`,
-            data: { patientId: patientId },
+            data: { customerId: customerId },
             success: function(data) {
                 $('#imageOldForms').empty();
-                $('#patientName').val(data.name);
-                $('#patientPhone').val(data.phone);
-                $('#patientEmail').val(data.email);
-                $('#patientDate').val(data.dateBooking);
-                $('#patientTime').val(data.timeBooking);
-                $('#patientReason').text(data.description);
-                $('#patientAddress').text(data.address);
+                $('#customerName').val(data.name);
+                $('#customerPhone').val(data.phone);
+                $('#customerEmail').val(data.email);
+                $('#customerDate').val(data.dateBooking);
+                $('#customerTime').val(data.timeBooking);
+                $('#customerReason').text(data.description);
+                $('#customerAddress').text(data.address);
                 if (data.ExtraInfo) {
-                    $('#patientHistoryBreath').text(data.ExtraInfo.historyBreath);
-                    $('#patientMoreInfo').text(data.ExtraInfo.moreInfo);
+                    $('#customerHistoryBreath').text(data.ExtraInfo.historyBreath);
+                    $('#customerMoreInfo').text(data.ExtraInfo.moreInfo);
                     if (data.ExtraInfo.oldForms) {
                         let images = JSON.parse(data.ExtraInfo.oldForms);
                         let html = '';
                         for (let [ key, value ] of Object.entries(images)) {
                             html += `
-                              <a href="/images/patients/${value}" class="mr-3" target="_blank" title="Click to show the image">
+                              <a href="/images/customers/${value}" class="mr-3" target="_blank" title="Click to show the image">
                                 <span>${value}</span>
                               </a>
                             `;
@@ -962,7 +962,7 @@ function handleDoctorViewInfoPatient() {
                     }
                 }
 
-                $('#modalDetailPatientForDoctor').modal('show');
+                $('#modalDetailCustomerForMerchant').modal('show');
             },
             error: function(err) {
                 console.log(error);
@@ -973,19 +973,19 @@ function handleDoctorViewInfoPatient() {
 }
 
 function showModalSendForms() {
-    $('.doctor-send-forms').on('click', function(e) {
-        let patientId = $(this).attr('data-patient-id');
+    $('.merchant-send-forms').on('click', function(e) {
+        let customerId = $(this).attr('data-customer-id');
         let isSend = $(this).attr('data-is-send-forms');
 
         $.ajax({
             url: `${window.location.origin}/api/get-detail-customer-by-id`,
             method: "POST",
-            data: { patientId: patientId },
+            data: { customerId: customerId },
             success: function(data) {
                 let html = '';
                 $('#divGenerateFilesSend').empty();
-                $('#emailPatient').val(data.email);
-                $('#btnSendFilesForms').attr('data-patient-id', patientId);
+                $('#emailCustomer').val(data.email);
+                $('#btnSendFilesForms').attr('data-customer-id', customerId);
                 if (data.ExtraInfo) {
                     if (data.ExtraInfo.sendForms) {
                         let images = JSON.parse(data.ExtraInfo.sendForms);
@@ -993,7 +993,7 @@ function showModalSendForms() {
                             html += `
                               <div class="form-row">
                                 <div class="form-group col-9">
-                                    <a type="text" class="form-control" id="nameFileSent" target="_blank" href="/images/patients/remedy/${value}" readonly="true" title="${value}" >
+                                    <a type="text" class="form-control" id="nameFileSent" target="_blank" href="/images/customers/remedy/${value}" readonly="true" title="${value}" >
                                ${value}
                                 </a>
                                 </div>
@@ -1020,7 +1020,7 @@ function showModalSendForms() {
     });
 }
 
-function handleSendFormsForPatient() {
+function handleSendFormsForCustomer() {
     $('#btnSendFilesForms').on("click", function(e) {
         if (!$('#filesSend').val()) {
             alert("Please select files before sending!");
@@ -1028,12 +1028,12 @@ function handleSendFormsForPatient() {
         }
         $(this).prop('disabled', true);
         $('#processLoadingAdmin').removeClass('d-none');
-        let formData = new FormData($('form#formSendFormsForPatient')[0]);
-        formData.append('patientId', $(this).attr('data-patient-id'));
+        let formData = new FormData($('form#formSendFormsForCustomer')[0]);
+        formData.append('customerId', $(this).attr('data-customer-id'));
 
         $.ajax({
             method: "POST",
-            url: `${window.location.origin}/merchant/send-forms-to-patient`,
+            url: `${window.location.origin}/merchant/send-forms-to-customer`,
             data: formData,
             cache: false,
             contentType: false,
@@ -1042,8 +1042,8 @@ function handleSendFormsForPatient() {
                 $('#modalSendForms').modal('hide');
                 $('#processLoadingAdmin').addClass('d-none');
                 $('#btnSendFilesForms').prop('disabled', false);
-                $(`.fa-exclamation-circle[data-patient-id=${data.patient.id}]`).css('color', '#36b9cc');
-                $(`.fa-exclamation-circle[data-patient-id=${data.patient.id}]`).removeClass('fa-exclamation-circle').addClass('fa-check-circle')
+                $(`.fa-exclamation-circle[data-customer-id=${data.customer.id}]`).css('color', '#36b9cc');
+                $(`.fa-exclamation-circle[data-customer-id=${data.customer.id}]`).removeClass('fa-exclamation-circle').addClass('fa-check-circle')
                 alertify.success('Sending remedies succeeds');
             },
             error: function(error) {
@@ -1055,7 +1055,7 @@ function handleSendFormsForPatient() {
 }
 
 function resetModal() {
-    $(`#modalDetailPatient`).on('hidden.bs.modal', function(e) {
+    $(`#modalDetailCustomer`).on('hidden.bs.modal', function(e) {
         $(this).find("input,textarea,select").val('').end().find("input[type=checkbox], input[type=radio]").prop("checked", "").end();
     });
 
@@ -1063,7 +1063,7 @@ function resetModal() {
         $(this).find("input,textarea,select").val('').end().find("input[type=checkbox], input[type=radio]").prop("checked", "").end();
     });
 
-    $(`#modalDetailPatientForDoctor`).on('hidden.bs.modal', function(e) {
+    $(`#modalDetailCustomerForMerchant`).on('hidden.bs.modal', function(e) {
         $(this).find("input,textarea,select").val('').end().find("input[type=checkbox], input[type=radio]").prop("checked", "").end();
     });
 
@@ -1106,14 +1106,14 @@ function statisticalAdmin(month) {
         url: `${window.location.origin}/admin/statistical`,
         data: { month: month },
         success: function(data) {
-            $('#sumPatient').text(data.patients.count);
-            $('#sumDoctor').text(data.doctors.count);
+            $('#sumCustomer').text(data.customers.count);
+            $('#sumMerchant').text(data.merchants.count);
             $('#sumPost').text(data.posts.count);
 
-            if (data.bestDoctor === '') {
-                $('#bestDoctor').text(`No information`);
+            if (data.bestMerchant === '') {
+                $('#bestMerchant').text(`No information`);
             } else {
-                $('#bestDoctor').text(`${data.bestDoctor.name} (${data.bestDoctor.count})`);
+                $('#bestMerchant').text(`${data.bestMerchant.name} (${data.bestMerchant.count})`);
             }
             if (data.bestSupporter === '') {
                 $('#bestSupporter').text(`No information`);
@@ -1150,7 +1150,7 @@ $(document).ready(function(e) {
         spellChecker: false
     });
     let converter = new showdown.Converter();
-    //create datepicker, doctor create schedule
+    //create datepicker, merchant create schedule
     $('#datepicker').datepicker({
         format: 'dd/mm/yyyy',
         weekStart: 1,
@@ -1160,8 +1160,8 @@ $(document).ready(function(e) {
     });
     $('#datepicker').datepicker("setDate", new Date());
 
-    //create datepicker, doctor-appointment
-    $('#dateDoctorAppointment').datepicker({
+    //create datepicker, merchant-appointment
+    $('#dateMerchantAppointment').datepicker({
         format: 'dd/mm/yyyy',
         weekStart: 1,
         daysOfWeekHighlighted: "6,0",
@@ -1173,10 +1173,10 @@ $(document).ready(function(e) {
     loadImageUserSetting(e);
     deleteClinicById();
     showModalSettingUser();
-    createNewDoctor();
-    deleteDoctorById();
-    showModalInfoDoctor();
-    updateDoctor();
+    createNewMerchant();
+    deleteMerchantById();
+    showModalInfoMerchant();
+    updateMerchant();
     deleteSpecializationById();
     showPostsForSupporter();
     deletePostById();
@@ -1184,23 +1184,23 @@ $(document).ready(function(e) {
     updatePost(markdownPost, converter);
 
     let arr = handleBtnSchedule();
-    createScheduleByDoctor(arr);
+    createScheduleByMerchant(arr);
     let currentDate = $("#datepicker").val();
     handleChangeDatePicker(currentDate);
-    loadNewPatientsForSupporter();
-    handleBtnNewPatientOk();
-    handleBtnNewPatientCancel();
-    handleBtnPendingPatient();
+    loadNewCustomersForSupporter();
+    handleBtnNewCustomerOk();
+    handleBtnNewCustomerCancel();
+    handleBtnPendingCustomer();
     handleBtnPendingCancel();
     resetModal();
-    handleAfterCallingPatient();
-    handleViewInfoPatientBooked();
+    handleAfterCallingCustomer();
+    handleViewInfoCustomerBooked();
     handleCancelBtn();
     handleBtnViewHistory();
 
-    handleDoctorViewInfoPatient();
+    handleMerchantViewInfoCustomer();
     showModalSendForms();
-    handleSendFormsForPatient();
+    handleSendFormsForCustomer();
     doneComment();
 
     let month = new Date().getMonth();

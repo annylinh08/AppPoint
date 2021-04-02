@@ -2,7 +2,7 @@ import express from "express";
 import home from "./../controllers/homeController";
 import auth from "./../controllers/authController";
 import admin from "./../controllers/adminController";
-import doctor from "./../controllers/doctorController";
+import merchant from "./../controllers/merchantController";
 import supporter from "./../controllers/supporterController";
 import passport from "passport";
 import passportLocal from 'passport-local';
@@ -24,19 +24,19 @@ passport.use(new LocalStrategy({
         try {
             await userService.findUserByEmail(email).then(async (user) => {
                 if (!user) {
-                    return done(null, false, req.flash("error", "Email không tồn tại"));
+                    return done(null, false, req.flash("error", "Email is not existed"));
                 }
                 if (user && user.isActive === 1) {
                     let match = await userService.comparePassword(password, user);
                     if (match) {
                         return done(null, user, null)
                     } else {
-                        return done(null, false, req.flash("error", "Mật khẩu không chính xác")
+                        return done(null, false, req.flash("error", "Password is not valid")
                         )
                     }
                 }
                 if (user && user.isActive === 0) {
-                    return done(null, false, req.flash("error", "Tài khoản chưa được kích hoạt"));
+                    return done(null, false, req.flash("error", "Account is not activated"));
                 }
             });
         } catch (err) {
@@ -58,24 +58,24 @@ passport.deserializeUser((id, done) => {
 });
 
 let initRoutes = (app) => {
-    router.get("/all-businesses", home.getPageAllDoctors);
+    router.get("/all-businesses", home.getPageAllMerchants);
     router.get("/all-categories", home.getPageAllSpecializations);
 
     router.get('/feedback/:id', home.getFeedbackPage);
     router.post('/feedback/create', home.postCreateFeedback);
 
-    router.get('/for-customers', home.getPageForPatients);
-    router.get('/for-merchants', home.getPageForDoctors);
+    router.get('/for-customers', home.getPageForCustomers);
+    router.get('/for-merchants', home.getPageForMerchants);
 
     router.post('/search-homepage', home.postSearchHomePage);
 
     router.get('/', home.getHomePage);
     router.get('/contact', home.getContactPage);
     router.get('/detail/specialization/:id', home.getDetailSpecializationPage);
-    router.get('/detail/merchant/:id', home.getDetailDoctorPage);
+    router.get('/detail/merchant/:id', home.getDetailMerchantPage);
 
-    router.post('/booking-merchant-without-files/create', home.postBookingDoctorPageWithoutFiles);
-    router.post('/booking-merchant-normal/create', home.postBookingDoctorPageNormal);
+    router.post('/booking-merchant-without-files/create', home.postBookingMerchantPageWithoutFiles);
+    router.post('/booking-merchant-normal/create', home.postBookingMerchantPageNormal);
 
     router.get('/detail/post/:id', home.getDetailPostPage);
     router.get('/booking-info/:id', home.getInfoBookingPage);
@@ -87,27 +87,27 @@ let initRoutes = (app) => {
     router.get('/users/manage/supporter', auth.checkLoggedIn, admin.getSupporterPage);
     router.get('/users', auth.checkLoggedIn, home.getUserPage);
 
-    router.get('/users/manage/schedule-for-merchants', auth.checkLoggedIn, admin.getManageCreateScheduleForDoctorsPage);
+    router.get('/users/manage/schedule-for-merchants', auth.checkLoggedIn, admin.getManageCreateScheduleForMerchantsPage);
 
-    router.get('/users/manage/merchant', auth.checkLoggedIn, admin.getManageDoctor);
-    router.get('/users/manage/merchant/create', auth.checkLoggedIn, admin.getCreateDoctor);
-    router.post('/admin/merchant/create', auth.checkLoggedIn, admin.postCreateDoctor);
-    router.get('/users/merchant/edit/:id', auth.checkLoggedIn, admin.getEditDoctor);
-    router.put('/admin/merchant/update-without-file', auth.checkLoggedIn, admin.putUpdateDoctorWithoutFile);
-    router.put('/admin/merchant/update', auth.checkLoggedIn, admin.putUpdateDoctor);
+    router.get('/users/manage/merchant', auth.checkLoggedIn, admin.getManageMerchant);
+    router.get('/users/manage/merchant/create', auth.checkLoggedIn, admin.getCreateMerchant);
+    router.post('/admin/merchant/create', auth.checkLoggedIn, admin.postCreateMerchant);
+    router.get('/users/merchant/edit/:id', auth.checkLoggedIn, admin.getEditMerchant);
+    router.put('/admin/merchant/update-without-file', auth.checkLoggedIn, admin.putUpdateMerchantWithoutFile);
+    router.put('/admin/merchant/update', auth.checkLoggedIn, admin.putUpdateMerchant);
 
-    router.get('/merchant/manage/schedule', doctor.getSchedule);
-    router.get('/merchant/manage/schedule/create', auth.checkLoggedIn, doctor.getCreateSchedule);
-    router.post('/merchant/manage/schedule/create', auth.checkLoggedIn, doctor.postCreateSchedule);
-    router.post('/merchant/get-schedule-merchant-by-date', doctor.getScheduleDoctorByDate);
-    router.get('/merchant/manage/appointment', auth.checkLoggedIn, doctor.getManageAppointment);
-    router.get('/merchant/manage/chart', auth.checkLoggedIn, doctor.getManageChart);
-    router.post('/merchant/manage/create-chart', auth.checkLoggedIn, doctor.postCreateChart);
-    router.post('/merchant/send-forms-to-patient', auth.checkLoggedIn, doctor.postSendFormsToPatient);
-    router.post('/merchant/auto-create-all-doctors-schedule', auth.checkLoggedIn, doctor.postAutoCreateAllDoctorsSchedule)
+    router.get('/merchant/manage/schedule', merchant.getSchedule);
+    router.get('/merchant/manage/schedule/create', auth.checkLoggedIn, merchant.getCreateSchedule);
+    router.post('/merchant/manage/schedule/create', auth.checkLoggedIn, merchant.postCreateSchedule);
+    router.post('/merchant/get-schedule-merchant-by-date', merchant.getScheduleMerchantByDate);
+    router.get('/merchant/manage/appointment', auth.checkLoggedIn, merchant.getManageAppointment);
+    router.get('/merchant/manage/chart', auth.checkLoggedIn, merchant.getManageChart);
+    router.post('/merchant/manage/create-chart', auth.checkLoggedIn, merchant.postCreateChart);
+    router.post('/merchant/send-forms-to-customer', auth.checkLoggedIn, merchant.postSendFormsToCustomer);
+    router.post('/merchant/auto-create-all-merchants-schedule', auth.checkLoggedIn, merchant.postAutoCreateAllMerchantsSchedule)
 
     router.get('/supporter/manage/customers', auth.checkLoggedIn, supporter.getManageCustomersPage);
-    router.get('/supporter/get-new-customers', auth.checkLoggedIn, supporter.getNewPatients);
+    router.get('/supporter/get-new-customers', auth.checkLoggedIn, supporter.getNewCustomers);
     router.get('/supporter/manage/posts', auth.checkLoggedIn, supporter.getManagePosts);
     router.get('/supporter/pagination/posts', supporter.getPostsPagination);
     router.get('/supporter/post/edit/:id', auth.checkLoggedIn, admin.getEditPost);
@@ -115,15 +115,15 @@ let initRoutes = (app) => {
     router.get('/supporter/manage/post/create', auth.checkLoggedIn, supporter.getCreatePost);
     router.post('/supporter/manage/post/create', auth.checkLoggedIn, supporter.postCreatePost);
     router.get('/supporter/get-list-posts', auth.checkLoggedIn, supporter.getAllPosts);
-    router.post('/supporter/get-customers-for-tabs', auth.checkLoggedIn, supporter.getForPatientsTabs);
-    router.post('/supporter/change-status-customer', auth.checkLoggedIn, supporter.postChangeStatusPatient);
-    router.post('/supporter/get-logs-customer', auth.checkLoggedIn, supporter.getLogsPatient);
+    router.post('/supporter/get-customers-for-tabs', auth.checkLoggedIn, supporter.getForCustomersTabs);
+    router.post('/supporter/change-status-customer', auth.checkLoggedIn, supporter.postChangeStatusCustomer);
+    router.post('/supporter/get-logs-customer', auth.checkLoggedIn, supporter.getLogsCustomer);
     router.post('/supporter/done-comment', auth.checkLoggedIn, supporter.postDoneComment);
 
-    router.post('/api/get-info-merchant-by-id', doctor.getInfoDoctorById);
-    router.post('/api/get-detail-customer-by-id', home.getDetailPatientBooking);
+    router.post('/api/get-info-merchant-by-id', merchant.getInfoMerchantById);
+    router.post('/api/get-detail-customer-by-id', home.getDetailCustomerBooking);
 
-    router.delete('/admin/delete/merchant', auth.checkLoggedIn, admin.deleteDoctorById);
+    router.delete('/admin/delete/merchant', auth.checkLoggedIn, admin.deleteMerchantById);
     router.delete('/admin/delete/specialization', auth.checkLoggedIn, admin.deleteSpecializationById);
     router.delete('/admin/delete/post', auth.checkLoggedIn, admin.deletePostById);
 

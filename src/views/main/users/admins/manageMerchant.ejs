@@ -23,21 +23,21 @@
                 </tr>
                 </thead>
                 <tbody>
-                <% doctors.forEach(function(doctor) { %>
+                <% merchants.forEach(function(merchant) { %>
                     <tr>
-                        <td><%= doctor.id %></td>
-                        <td><%= doctor.name %></td>
-                        <td><%= doctor.getDataValue('specializationName') %></td>
+                        <td><%= merchant.id %></td>
+                        <td><%= merchant.name %></td>
+                        <td><%= merchant.getDataValue('specializationName') %></td>
                         
                         <td>
-                            <% if(doctor.isActive) {%> Active
+                            <% if(merchant.isActive) {%> Active
                            <%} else {%> Inactive
                             <%}%>
                         </td>
                         <td class="">
-                            <a class="show-doctor-info" data-doctor-id="<%= doctor.id%>" href="#" title="View info"><i class="fas fa-info-circle"></i></a>
-                            <a class="edit-doctor-info" href="/users/merchant/edit/<%= doctor.id %>" title="Edit"><i class="fas fa-pen-square mx-3"></i></a>
-                            <a class="delete-doctor-info" data-doctor-id="<%= doctor.id%>" href="#" title="Delete"><i class="fas fa-trash"></i></a>
+                            <a class="show-doctor-info" data-merchant-id="<%= merchant.id%>" href="#" title="View info"><i class="fas fa-info-circle"></i></a>
+                            <a class="edit-doctor-info" href="/users/merchant/edit/<%= merchant.id %>" title="Edit"><i class="fas fa-pen-square mx-3"></i></a>
+                            <a class="delete-doctor-info" data-merchant-id="<%= merchant.id%>" href="#" title="Delete"><i class="fas fa-trash"></i></a>
                         </td>
                     </tr>
                 <% }) %>
@@ -98,7 +98,7 @@
 <script>
     $(document).ready(function() {
         $("div #featureManage").addClass('show');
-        $("div #featureManage").find($("#aManageDoctor")).addClass("active");
+        $("div #featureManage").find($("#aManageMerchant")).addClass("active");
         $(".supporter-list-posts").removeClass("active");
     })
 </script>

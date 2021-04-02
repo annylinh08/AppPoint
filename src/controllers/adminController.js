@@ -2,27 +2,27 @@ import homeService from "./../services/homeService";
 import userService from "./../services/userService";
 import specializationService from "./../services/specializationService";
 import supporterService from "./../services/supporterService";
-import doctorService from "./../services/doctorService";
+import merchantService from "./../services/merchantService";
 import multer from "multer";
 
-let getManageDoctor = async (req, res) => {
-    let doctors = await userService.getInfoDoctors();
-    return res.render("main/users/admins/manageDoctor.ejs", {
+let getManageMerchant = async (req, res) => {
+    let merchants = await userService.getInfoMerchants();
+    return res.render("main/users/admins/manageMerchant.ejs", {
         user: req.user,
-        doctors: doctors,
+        merchants: merchants,
     });
 };
 
 
-let getCreateDoctor = async (req, res) => {
+let getCreateMerchant = async (req, res) => {
     let specializations = await homeService.getSpecializations();
-    return res.render("main/users/admins/createDoctor.ejs", {
+    return res.render("main/users/admins/createMerchant.ejs", {
         user: req.user,
         specializations: specializations
     });
 };
-let postCreateDoctor = async (req, res) => {
-    let doctor = {
+let postCreateMerchant = async (req, res) => {
+    let merchant = {
         'name': req.body.name,
         'phone': req.body.phone,
         'email': req.body.email,
@@ -33,7 +33,7 @@ let postCreateDoctor = async (req, res) => {
         'description': req.body.description
     };
     try {
-        await userService.createDoctor(doctor);
+        await userService.createMerchant(merchant);
         return res.status(200).json({ message: 'success' })
     } catch (err) {
         console.log(err);
@@ -51,9 +51,9 @@ let getSpecializationPage = async (req, res) => {
     });
 };
 
-let deleteDoctorById = async (req, res) => {
+let deleteMerchantById = async (req, res) => {
     try {
-        let doctor = await doctorService.deleteDoctorById(req.body.id);
+        let merchant = await merchantService.deleteMerchantById(req.body.id);
         return res.status(200).json({
             'message': 'success'
         })
@@ -64,29 +64,29 @@ let deleteDoctorById = async (req, res) => {
     }
 };
 
-let getEditDoctor = async (req, res) => {
-    let doctor = await doctorService.getDoctorForEditPage(req.params.id);
+let getEditMerchant = async (req, res) => {
+    let merchant = await merchantService.getMerchantForEditPage(req.params.id);
     let specializations = await homeService.getSpecializations();
-    return res.render("main/users/admins/editDoctor.ejs", {
+    return res.render("main/users/admins/editMerchant.ejs", {
         user: req.user,
-        doctor: doctor,
+        merchant: merchant,
         specializations: specializations
     })
 };
 
-let putUpdateDoctorWithoutFile = async (req, res) => {
+let putUpdateMerchantWithoutFile = async (req, res) => {
     try {
         let item = {
             id: req.body.id,
-            name: req.body.nameDoctor,
-            phone: req.body.phoneDoctor,
-            address: req.body.addressDoctor,
-            description: req.body.introEditDoctor,
-            specializationId: req.body.specializationDoctor
+            name: req.body.nameMerchant,
+            phone: req.body.phoneMerchant,
+            address: req.body.addressMerchant,
+            description: req.body.introEditMerchant,
+            specializationId: req.body.specializationMerchant
         };
-        await doctorService.updateDoctorInfo(item);
+        await merchantService.updateMerchantInfo(item);
         return res.status(200).json({
-            message: 'update info doctor successful'
+            message: 'update info merchant successful'
         });
     } catch (e) {
         console.log(e)
@@ -94,8 +94,8 @@ let putUpdateDoctorWithoutFile = async (req, res) => {
     }
 };
 
-let putUpdateDoctor = (req, res) => {
-    imageDoctorUploadFile(req, res, async (err) => {
+let putUpdateMerchant = (req, res) => {
+    imageMerchantUploadFile(req, res, async (err) => {
         if (err) {
             if (err.message) {
                 return res.status(500).send(err.message);
@@ -107,18 +107,18 @@ let putUpdateDoctor = (req, res) => {
         try {
             let item = {
                 id: req.body.id,
-                name: req.body.nameDoctor,
-                phone: req.body.phoneDoctor,
-                address: req.body.addressDoctor,
-                description: req.body.introEditDoctor,
-                specializationId: req.body.specializationDoctor
+                name: req.body.nameMerchant,
+                phone: req.body.phoneMerchant,
+                address: req.body.addressMerchant,
+                description: req.body.introEditMerchant,
+                specializationId: req.body.specializationMerchant
             };
-            let imageDoctor = req.file;
-            item.avatar = imageDoctor.filename;
-            let doctor = await doctorService.updateDoctorInfo(item);
+            let imageMerchant = req.file;
+            item.avatar = imageMerchant.filename;
+            let merchant = await merchantService.updateMerchantInfo(item);
             return res.status(200).json({
-                message: 'update doctor info successful',
-                doctor: doctor
+                message: 'update merchant info successful',
+                merchant: merchant
             });
 
         } catch (e) {
@@ -127,7 +127,7 @@ let putUpdateDoctor = (req, res) => {
     });
 };
 
-let storageImageDoctor = multer.diskStorage({
+let storageImageMerchant = multer.diskStorage({
     destination: (req, file, callback) => {
         callback(null, "src/public/images/users");
     },
@@ -137,8 +137,8 @@ let storageImageDoctor = multer.diskStorage({
     }
 });
 
-let imageDoctorUploadFile = multer({
-    storage: storageImageDoctor,
+let imageMerchantUploadFile = multer({
+    storage: storageImageMerchant,
     limits: { fileSize: 1048576 * 20 }
 }).single("avatar");
 
@@ -180,11 +180,11 @@ let deletePostById = async (req, res) => {
 
 let getEditPost = async (req, res) => {
     try {
-        let doctors = await userService.getInfoDoctors();
+        let merchants = await userService.getInfoMerchants();
         let specializations = await homeService.getSpecializations();
         let post = await supporterService.getDetailPostPage(req.params.id);
         return res.render('main/users/admins/editPost.ejs', {
-            doctors: doctors,
+            merchants: merchants,
             specializations: specializations,
             user: req.user,
             post: post
@@ -200,7 +200,7 @@ let putUpdatePost = async (req, res) => {
         let data = {
             id: req.body.id,
             title: req.body.titlePost,
-            forDoctorId: req.body.forDoctorId,
+            forMerchantId: req.body.forMerchantId,
             forSpecializationId: req.body.forSpecializationId,
             writerId: req.user.id,
             contentMarkdown: req.body.contentMarkdown,
@@ -218,9 +218,9 @@ let putUpdatePost = async (req, res) => {
     }
 };
 
-let getManageCreateScheduleForDoctorsPage = async (req, res) => {
+let getManageCreateScheduleForMerchantsPage = async (req, res) => {
     try {
-        return res.render('main/users/admins/manageScheduleForDoctors.ejs', {
+        return res.render('main/users/admins/manageScheduleForMerchants.ejs', {
             user: req.user,
         })
     } catch (e) {
@@ -241,23 +241,23 @@ let getInfoStatistical = async (req, res) => {
 };
 
 module.exports = {
-    getManageDoctor: getManageDoctor,
-    getCreateDoctor: getCreateDoctor,
+    getManageMerchant: getManageMerchant,
+    getCreateMerchant: getCreateMerchant,
     getSpecializationPage: getSpecializationPage,
-    getEditDoctor: getEditDoctor,
+    getEditMerchant: getEditMerchant,
     getSupporterPage: getSupporterPage,
 
     getEditPost: getEditPost,
-    getManageCreateScheduleForDoctorsPage: getManageCreateScheduleForDoctorsPage,
+    getManageCreateScheduleForMerchantsPage: getManageCreateScheduleForMerchantsPage,
     getInfoStatistical: getInfoStatistical,
 
-    postCreateDoctor: postCreateDoctor,
+    postCreateMerchant: postCreateMerchant,
 
-    putUpdateDoctorWithoutFile: putUpdateDoctorWithoutFile,
-    putUpdateDoctor: putUpdateDoctor,
+    putUpdateMerchantWithoutFile: putUpdateMerchantWithoutFile,
+    putUpdateMerchant: putUpdateMerchant,
     putUpdatePost: putUpdatePost,
 
-    deleteDoctorById: deleteDoctorById,
+    deleteMerchantById: deleteMerchantById,
     deleteSpecializationById: deleteSpecializationById,
     deletePostById: deletePostById
 };

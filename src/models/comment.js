@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
     const Comment = sequelize.define('Comment', {
-        doctorId: DataTypes.INTEGER,
+        merchantId: DataTypes.INTEGER,
         timeBooking: DataTypes.STRING,
         dateBooking: DataTypes.STRING,
         name: DataTypes.STRING,
@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         deletedAt: DataTypes.DATE,
     }, {});
     Comment.associate = function(models) {
-        models.Comment.belongsTo(models.User, { foreignKey: 'doctorId' });
+        models.Comment.belongsTo(models.User, { foreignKey: 'merchantId' });
     };
     return Comment;
 };

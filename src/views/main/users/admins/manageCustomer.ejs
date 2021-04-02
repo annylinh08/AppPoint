@@ -1,51 +1,236 @@
 <% extend("master.ejs") %>
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Customer care</h1>
+    <h1 class="h3 mb-0 text-gray-800">Manage customers</h1>
 </div>
 
 <!-- Content Row -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">List of customer feedback</h6>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="customer-new-tab" data-toggle="tab" href="#newCustomers" role="tab"
+                   aria-controls="home" aria-selected="true">Add new customer(<span id="count-new"></span>) </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="customer-need-confirm-tab" data-toggle="tab" href="#customersNeedConfirm"
+                   role="tab"
+                   aria-controls="profile" aria-selected="false">Need confirmation(<span id="count-need"></span>) </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="customer-confirmed-tab" data-toggle="tab" href="#customerConfirmed" role="tab"
+                   aria-controls="contact" aria-selected="false">Confirmed (<span id="count-confirmed"></span>) </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="customer-cancel-tab" data-toggle="tab" href="#customerCanceled" role="tab"
+                   aria-controls="contact" aria-selected="false">Cancelled (<span id="count-canceled"></span>) </a>
+            </li>
+        </ul>
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Content</th>
-                    <th>Phone number</th>
-                    <th>Time</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <% comments.forEach(function(cmt) { %>
-                    <tr>
-                        <td><%= cmt.id %></td>
-                        <td><%= cmt.name %></td>
-                        <td><%= cmt.content %></td>
-                        <td><%= cmt.phone %></td>
-                        <td><%= cmt.createdAt %></td>
-                        <td class="">
-                            <a class="done-comment" data-comment-id="<%= cmt.id%>" href="#" title="Confirm feedback"><i class="fa fa-check-circle"></i></a>
-                            <a class="edit-comment" href="/users/supporter/comment-edit/<%= cmt.id %>" title="Edit"><i class="fas fa-pen-square mx-3"></i></a>
-                            <a class="delete-comment" data-comment-id="<%= cmt.id%>" href="#" title="Delete"><i class="fas fa-trash"></i></a>
-                        </td>
-                    </tr>
-                <% }) %>
-                </tbody>
-            </table>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="newCustomers" role="tabpanel"
+                     aria-labelledby="customer-new-tab">
+                    <table class="table table-bordered" id="tableNewCustomers" width="100%" cellspacing="0">
+                        <thead>
+
+                        <tr>
+                            <th>ID - Name</th>
+                            <th>Phone number</th>
+                            <th>Email</th>
+                            <th>Update</th>
+                            <th class="w-25">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="customersNeedConfirm" role="tabpanel"
+                     aria-labelledby="customer-need-confirm-tab">
+                    <table class="table table-bordered" id="tableNeedConfirmCustomers" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>ID - Name</th>
+                            <th>Phone number</th>
+                            <th>Email</th>
+                            <th>Update</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="tab-pane fade" id="customerConfirmed" role="tabpanel"
+                     aria-labelledby="customer-confirmed-tab">
+                    <table class="table table-bordered" id="tableConfirmedCustomers" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>ID - Name</th>
+                            <th>Phone number</th>
+                            <th>Email</th>
+                            <th>Update</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="tab-pane fade" id="customerCanceled" role="tabpanel" aria-labelledby="customer-cancel-tab">
+                    <table class="table table-bordered" id="tableCancelCustomers" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>ID - Name</th>
+                            <th>Phone number</th>
+                            <th>Email</th>
+                            <th>Update</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 
-<!-- Content Row -->
+<!-- Modal detail info customer-->
+<div class="modal fade " tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
+     id="modalDetailCustomer">
+    <div class="modal-dialog mw-100 w-75" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Customer information</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-4">
+                        <label class="col-form-label text-label" for="customerName">Name:</label>
+                        <input type="text" class="form-control" id="customerName" name="customerName">
+                    </div>
+                    <div class="form-group col-4">
+                        <label class="col-form-label text-label" for="customerPhone">Phone number:</label>
+                        <input type="text" class="form-control" id="customerPhone" name="customerPhone">
+                    </div>
+                    <div class="form-group col-4">
+                        <label class="col-form-label text-label" for="customerEmail">Email:</label>
+                        <input type="email" class="form-control" id="customerEmail" name="customerEmail">
+                    </div>
+                    <div class="form-group col-2">
+                        <label class="col-form-label text-label" for="customerDate">Date:</label>
+                        <input type="text" class="form-control" id="customerDate" name="customerDate" readonly>
+                    </div>
+                    <div class="form-group col-2">
+                        <label class="col-form-label text-label" for="customerTime">Time:</label>
+                        <input type="text" class="form-control" id="customerTime" name="customerTime" readonly>
+                    </div>
+                    <div class="form-group col-4">
+                        <label class="col-form-label text-label" for="customerReason">Service Booking:</label>
+                        <textarea class="form-control" name="customerReason" id="customerReason"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="ml-3 btn btn-secondary" id="btn-cancel-customer" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn-confirm-customer-done">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal cancel booking-->
+<div class="modal fade" id="modalCancelBooking" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Customer denial confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formCancelBooking">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio"  name="reasonCancel" id="inputDefaultReason" value="reason1" checked>
+                        <label class="form-check-label" for="exampleRadios1">
+                            Schedule spamming, not real
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="reasonCancel" id="exampleRadios2" value="reason2">
+                        <label class="form-check-label" for="exampleRadios2">
+                            The customer canceled the schedule
+                        </label>
+                    </div>
+                    <div class="form-check disabled">
+                        <input class="form-check-input" type="radio" name="reasonCancel" id="exampleRadios3" value="reason3" >
+                        <label class="form-check-label" for="exampleRadios3">
+                            Another reason <input type="text" id="otherReason">
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="btnCancelBookingCustomer" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal history cancel booking -->
+<div class="modal fade" id="modalHistoryBooking" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  mw-100 w-75" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Customer scheduling history</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <fieldset disabled>
+                    <div class="form-row">
+                        <div class="col-6">
+                            <label>Status:</label>
+                        </div>
+                        <div class="col-3">
+                            <label>Who:</label>
+                        </div>
+                        <div class="col-3">
+                            <label>Time:</label>
+                        </div>
+                    </div>
+                    <div id="contentHistory">
+
+                    </div>
+                </fieldset>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btn-view-history" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(function() {
         $(".supporter-list-customers").addClass("active");
-    });
+    })
 </script>

@@ -8,7 +8,7 @@
 <!-- Content Row -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Statistics of patients examined in the month</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Statistics of customers examined in the month</h6>
     </div>
     <div class="card-body">
         <div class="">
@@ -30,16 +30,16 @@
             success: function(data) {
                 let countNotSendForms = 0;
                 let countSuccess = 0;
-                if (data.patients.count > 0) {
-                    data.patients.rows.forEach((patient) => {
+                if (data.customers.count > 0) {
+                    data.customers.rows.forEach((customer) => {
                     
-                        if (patient.statusId === 1) {
+                        if (customer.statusId === 1) {
                             countSuccess++;
                         }
                     })
-                    let one = data.patients.count;
+                    let one = data.customers.count;
                     let two = countSuccess;
-                    let three = data.patients.count - countNotSendForms;
+                    let three = data.customers.count - countNotSendForms;
                     let chart = new CanvasJS.Chart("chartContainer", {
                         animationEnabled: true,
                         theme: "light2", // "light1", "light2", "dark1", "dark2"

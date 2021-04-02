@@ -10,46 +10,46 @@ const Op = Sequelize.Op;
 import moment from "moment";
 
 let salt = 7;
-let createDoctor = (doctor) => {
-    doctor.roleId = 2;
-    doctor.password = bcrypt.hashSync(doctor.password, salt);
+let createMerchant = (merchant) => {
+    merchant.roleId = 2;
+    merchant.password = bcrypt.hashSync(merchant.password, salt);
     return new Promise((async (resolve, reject) => {
-        let newDoctor = await db.User.create(doctor);
+        let newMerchant = await db.User.create(merchant);
         let item = {
-            doctorId: newDoctor.id,
-            specializationId: doctor.specializationId
+            merchantId: newMerchant.id,
+            specializationId: merchant.specializationId
         };
-        await db.Doctor_User.create(item);
+        await db.Merchant_User.create(item);
 
-        //create doctor elastic
+        //create merchant elastic
 
-        resolve(newDoctor)
+        resolve(newMerchant)
     }));
 };
 
-let getInfoDoctors = () => {
+let getInfoMerchants = () => {
     return new Promise((async (resolve, reject) => {
         try {
-            let doctors = await db.User.findAll({
+            let merchants = await db.User.findAll({
                 where: { roleId: 2 },
                 include: [
-                    { model: db.Doctor_User, required: false },
-                    { model: db.Patient, required: false, where: { statusId: 1 } }
+                    { model: db.Merchant_User, required: false },
+                    { model: db.Customer, required: false, where: { statusId: 1 } }
                 ]
             });
-            await Promise.all(doctors.map(async (doctor) => {
-                if (doctor.Doctor_User) {
-                    let specialization = await helper.getSpecializationById(doctor.Doctor_User.specializationId);
-                    let countBooking = doctor.Patients.length;
-                    doctor.setDataValue('specializationName', specialization.name);
-                    doctor.setDataValue('countBooking', countBooking);
+            await Promise.all(merchants.map(async (merchant) => {
+                if (merchant.Merchant_User) {
+                    let specialization = await helper.getSpecializationById(merchant.Merchant_User.specializationId);
+                    let countBooking = merchant.Customers.length;
+                    merchant.setDataValue('specializationName', specialization.name);
+                    merchant.setDataValue('countBooking', countBooking);
                 } else {
-                    doctor.setDataValue('specializationName', "null");
-                    doctor.setDataValue('countBooking', 0);
+                    merchant.setDataValue('specializationName', "null");
+                    merchant.setDataValue('countBooking', 0);
                 }
-                return doctor;
+                return merchant;
             }));
-            resolve(doctors);
+            resolve(merchants);
         } catch (e) {
             reject(e);
         }
@@ -107,8 +107,8 @@ let getInfoStatistical = (month) => {
             let startDate = Date.parse(stringToDate(`01/${month}/2020`, "dd/MM/yyyy", "/"));
             let endDate = Date.parse(stringToDate(`31/${month}/2020`, "dd/MM/yyyy", "/"));
 
-            let patients = await db.Patient.findAndCountAll({
-                attributes: [ 'id','doctorId' ],
+            let customers = await db.Customer.findAndCountAll({
+                attributes: [ 'id','merchantId' ],
                 where: {
                     createdAt: {
                         [Op.between]: [ startDate, endDate ],
@@ -116,7 +116,7 @@ let getInfoStatistical = (month) => {
                 }
             });
 
-            let doctors = await db.User.findAndCountAll({
+            let merchants = await db.User.findAndCountAll({
                 attributes: [ 'id' ],
                 where: {
                     roleId: 2,
@@ -130,33 +130,33 @@ let getInfoStatistical = (month) => {
                 attributes: [ 'id','writerId' ],
                 where: {
                     forSpecializationId: -1,
-                    forDoctorId: -1,
+                    forMerchantId: -1,
                     createdAt: {
                         [Op.between]: [ startDate, endDate ],
                     }
                 }
             });
 
-            let bestDoctor = '';
+            let bestMerchant = '';
 
-            if(+patients.count > 0){
-                let bestDoctorIdArr = _(patients.rows)
-                .groupBy('doctorId')
-                .map((v, doctorId) => ({
-                    doctorId,
-                    patientId: _.map(v, 'id')
+            if(+customers.count > 0){
+                let bestMerchantIdArr = _(customers.rows)
+                .groupBy('merchantId')
+                .map((v, merchantId) => ({
+                    merchantId,
+                    customerId: _.map(v, 'id')
                 }))
                 .value();
-                let doctorObject = _.maxBy(bestDoctorIdArr, function(o) {
-                    return o.patientId.length;
+                let merchantObject = _.maxBy(bestMerchantIdArr, function(o) {
+                    return o.customerId.length;
                 });
-                 bestDoctor = await db.User.findOne({
+                 bestMerchant = await db.User.findOne({
                     where: {
-                        id: doctorObject.doctorId
+                        id: merchantObject.merchantId
                     },
                     attributes: ['id', 'name']
                 });
-                bestDoctor.setDataValue("count", doctorObject.patientId.length);
+                bestMerchant.setDataValue("count", merchantObject.customerId.length);
             }
 
             let bestSupporter = '';
@@ -181,10 +181,10 @@ let getInfoStatistical = (month) => {
             }
 
             resolve({
-                patients: patients,
-                doctors: doctors,
+                customers: customers,
+                merchants: merchants,
                 posts: posts,
-                bestDoctor: bestDoctor,
+                bestMerchant: bestMerchant,
                 bestSupporter: bestSupporter
             });
         } catch (e) {
@@ -193,27 +193,27 @@ let getInfoStatistical = (month) => {
     });
 };
 
-let getInfoDoctorChart = (month) => {
+let getInfoMerchantChart = (month) => {
     return new Promise(async (resolve, reject) => {
         try{
             let startDate = Date.parse(stringToDate(`01/${month}/2020`, "dd/MM/yyyy", "/"));
             let endDate = Date.parse(stringToDate(`31/${month}/2020`, "dd/MM/yyyy", "/"));
-            let patients = await db.Patient.findAndCountAll({
-                attributes: [ 'id','doctorId','statusId' ],
+            let customers = await db.Customer.findAndCountAll({
+                attributes: [ 'id','merchantId','statusId' ],
                 where: {
                     createdAt: {
                         [Op.between]: [ startDate, endDate ],
                     },
                 }
             });
-            resolve({patients: patients})
+            resolve({customers: customers})
         }catch (e) {
             reject(e);
         }
     });
 };
 
-let createAllDoctorsSchedule = () => {
+let createAllMerchantsSchedule = () => {
     return new Promise(async (resolve, reject) => {
         try {
             let timeArr = ['08:00 - 09:00', '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00',
@@ -225,7 +225,7 @@ let createAllDoctorsSchedule = () => {
                 threeDaySchedules.push(date);
             }
 
-            let doctors = await db.User.findAll({
+            let merchants = await db.User.findAll({
                 where: {
                     roleId: 2
                 },
@@ -236,10 +236,10 @@ let createAllDoctorsSchedule = () => {
             //only create once
             let isCreatedBefore = false;
 
-            //only check the first doctor with date and time
+            //only check the first merchant with date and time
             let check = await db.Schedule.findAll({
                 where: {
-                    doctorId: doctors[0].id,
+                    merchantId: merchants[0].id,
                     date: threeDaySchedules[0],
                     time: timeArr[0]
                 }
@@ -248,13 +248,13 @@ let createAllDoctorsSchedule = () => {
             if(check && check.length > 0) isCreatedBefore = true;
 
             if(!isCreatedBefore){
-                if (doctors && doctors.length > 0) {
+                if (merchants && merchants.length > 0) {
                     await Promise.all(
-                        doctors.map((doctor) => {
+                        merchants.map((merchant) => {
                             threeDaySchedules.map(day => {
                                 timeArr.map(async (time) => {
                                     let schedule = {
-                                        doctorId: doctor.id,
+                                        merchantId: merchant.id,
                                         date: day,
                                         time: time,
                                         maxBooking: 2,
@@ -276,11 +276,11 @@ let createAllDoctorsSchedule = () => {
     });
 }
 
-let getAllDoctorsSchedule = () => {
+let getAllMerchantsSchedule = () => {
     return new Promise(async (resolve, reject) => {
         try {
             let schedules = await db.Schedule.findAll({
-                attributes: ['doctorId', 'date', 'time'],
+                attributes: ['merchantId', 'date', 'time'],
                 raw: true
             });
             resolve(schedules)
@@ -290,13 +290,13 @@ let getAllDoctorsSchedule = () => {
     })
 }
 module.exports = {
-    createDoctor: createDoctor,
-    getInfoDoctors: getInfoDoctors,
+    createMerchant: createMerchant,
+    getInfoMerchants: getInfoMerchants,
     findUserByEmail: findUserByEmail,
     findUserById: findUserById,
     comparePassword: comparePassword,
     getInfoStatistical: getInfoStatistical,
-    getInfoDoctorChart: getInfoDoctorChart,
-    createAllDoctorsSchedule: createAllDoctorsSchedule,
-    getAllDoctorsSchedule: getAllDoctorsSchedule
+    getInfoMerchantChart: getInfoMerchantChart,
+    createAllMerchantsSchedule: createAllMerchantsSchedule,
+    getAllMerchantsSchedule: getAllMerchantsSchedule
 };

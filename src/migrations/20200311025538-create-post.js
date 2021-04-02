@@ -17,7 +17,7 @@ module.exports = {
             contentHTML: {
                 type: Sequelize.TEXT
             },
-            forDoctorId: {
+            forMerchantId: {
                 type: Sequelize.INTEGER,
                 allowNull: true,
             },
@@ -29,7 +29,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: false,
             },
-            confirmByDoctor: {
+            confirmByMerchant: {
                 type: Sequelize.TINYINT(1),
                 allowNull: true,
             },

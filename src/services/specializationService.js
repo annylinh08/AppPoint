@@ -52,7 +52,7 @@ let deleteSpecializationById = (id) => {
             await db.Specialization.destroy({
                 where: { id: id }
             });
-            let infos = await db.Doctor_User.findAll({
+            let infos = await db.Merchant_User.findAll({
                 where: {
                     specializationId: id
                 }
@@ -61,7 +61,7 @@ let deleteSpecializationById = (id) => {
             infos.forEach((x) => {
                 arrId.push(x.id);
             });
-            await db.Doctor_User.destroy({ where: { id: arrId } });
+            await db.Merchant_User.destroy({ where: { id: arrId } });
             resolve(true);
 
         } catch (e) {

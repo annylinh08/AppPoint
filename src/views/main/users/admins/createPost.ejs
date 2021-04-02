@@ -17,7 +17,7 @@
                     <div class="form-group col-4">
                         <select id="forDoctorId" class="form-control" name="forDoctorId">
                             <option value="-1" selected>No business are chosen</option>
-                            <% doctors.forEach(function(x) { %>
+                            <% merchants.forEach(function(x) { %>
                                 <option value="<%= x.id %>"> <%= x.name %> </option>
                             <% }) %>
                         </select>

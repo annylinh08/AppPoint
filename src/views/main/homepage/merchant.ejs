@@ -30,13 +30,13 @@
         <div class="container">
             <div class="row">
                 <div class="col-2">
-                    <img src="/images/users/<%= doctor.avatar %>" class="avatar-doctor" alt="doctor avatar">
+                    <img src="/images/users/<%= merchant.avatar %>" class="avatar-doctor" alt="doctor avatar">
                 </div>
                 <div class="col-9 info-doctor">
-                    <div><span class="name-doctor"><%= doctor.name %></span></div>
+                    <div><span class="name-doctor"><%= merchant.name %></span></div>
                     <div>Category: <span><%= specialization.name %></span></div>
                     <div class="mt-2">
-                        <a href="/feedback/<%=doctor.id%>" class="btn-feedback text-decoration-none">Send feedback after your visit</a>
+                        <a href="/feedback/<%=merchant.id%>" class="btn-feedback text-decoration-none">Send feedback after your visit</a>
                     </div>
                 </div>
 
@@ -50,16 +50,16 @@
             <div class="row">
                 <div class="col-7">
                     <div class="content-doctor">
-                        <% if(postDoctor) { %>
-                            <%- postDoctor.contentHTML %>
+                        <% if(postMerchant) { %>
+                            <%- postMerchant.contentHTML %>
                         <% } %>
                     </div>
                     <div>
                         <br>
-                        <% if( doctor.Comments.length > 0){%>
+                        <% if( merchant.Comments.length > 0){%>
                             <div class="title-feedback">Customers review:</div>
 
-                            <% doctor.Comments.forEach(function(cmt) { %>
+                            <% merchant.Comments.forEach(function(cmt) { %>
                                 <div class="comment mt-3 d-flex flex-column">
                                     <div class="d-flex flex-row">
                                         <div><strong><%= cmt.name%></strong></div>
@@ -81,7 +81,7 @@
                             <div class="row header-booking">
                                 <label for="day-book" class="label-booking">SCHEDULE TIME</label>
                             </div>
-                            <select id="day-book" class="form-control" data-doctor="<%= doctor.id %>">
+                            <select id="day-book" class="form-control" data-merchant="<%= merchant.id %>">
                                 <% sevenDaySchedule.forEach(function(day) { %>
                                     <option value="<%= day %>"><%= day %></option>
                                 <% }) %>
@@ -90,15 +90,15 @@
                         </div>
                         <div id="div-schedule-id"
                              class="doctor-schedule d-flex flex-row  flex-wrap text-decoration-none">
-                            <% if(doctor.Schedules.length === 0){ %>
+                            <% if(merchant.Schedules.length === 0){ %>
                                 <div>
-                                    "<%= doctor.name %>" does not have an scheduele on
+                                    "<%= merchant.name %>" does not have an scheduele on
                                     <b><%= sevenDaySchedule[0] %></b>. Please select the next available time.
                                 </div>
                             <% } %>
-                                <% doctor.Schedules.forEach( function(x, index) { %>
+                                <% merchant.Schedules.forEach( function(x, index) { %>
                                     <% if(x.getDataValue("isDisable") === false) { %>
-                                        <div id="btn-modal-<%= x.id %>" data-doctorId="<%= doctor.id %>"
+                                        <div id="btn-modal-<%= x.id %>" data-merchantId="<%= merchant.id %>"
                                              data-date="<%= x.date %>"
                                              data-time="<%= x.time %>"
                                              class="text-decoration-none" onclick="openModalBooking(this.id)">
@@ -108,14 +108,14 @@
                                         </div>
                                     <% } %>
 
-                                    <% if( index === doctor.Schedules.length - 1 && x.getDataValue("isDisable") === true){%>
+                                    <% if( index === merchant.Schedules.length - 1 && x.getDataValue("isDisable") === true){%>
                                             <div>
                                                 There are no scheduled visits in the current timeframe. Please select the next available time.
                                             </div>
                                         <%}%>
                                 <% }) %>
                                 <div id="div-more-info">
-                                    <% if(doctor.Schedules.length > 0){ %>
+                                    <% if(merchant.Schedules.length > 0){ %>
                                         <div class="d-flex flex-column">
                                             <div>
                                                 <span class="d-block mt-2"> Choose a time and book now</span>
@@ -125,7 +125,7 @@
                                                                     <span class="d-block pt-3 pb-1"
                                                                           style="text-transform: uppercase">Business Address:</span>
                                                 <span class="d-block pb-1"
-                                                      style="border-bottom: 1px solid #ccc"><%= doctor.address %></span>
+                                                      style="border-bottom: 1px solid #ccc"><%= merchant.address %></span>
                                             </div>
                                         </div>
                                     <% } %>
@@ -144,7 +144,7 @@
     </div>
 </section>
 
-<input hidden type="text" id="doctorAddress" value="<%= doctor.address %>">
+<input hidden type="text" id="doctorAddress" value="<%= merchant.address %>">
 
 <div class="modal fade " tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
      id="modalBooking">
@@ -158,28 +158,28 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-5" style="border-right: 1px solid #ccc;" id="infoDoctor"
-                         data-doctor-id="<%= doctor.id %>">
+                    <div class="col-5" style="border-right: 1px solid #ccc;" id="infoMerchant"
+                         data-merchant-id="<%= merchant.id %>">
                         <label class="text-label" style="padding-top: 7px">Business information:</label>
                         <div class="d-flex flex-row">
-                            <img class="avatar-doctor-modal" src="/images/users/<%= doctor.avatar %>">
+                            <img class="avatar-doctor-modal" src="/images/users/<%= merchant.avatar %>">
                             <div class="ml-3">
-                                <span class="d-block"><%= doctor.name %></span>
-                                <div class="time-booking" id="time-patient-booking"></div>
-                                <div class="time-booking" id="date-patient-booking"></div>
+                                <span class="d-block"><%= merchant.name %></span>
+                                <div class="time-booking" id="time-customer-booking"></div>
+                                <div class="time-booking" id="date-customer-booking"></div>
                             </div>
                         </div>
 
                         <div class="mt-4">
-                            <%= doctor.address %>
+                            <%= merchant.address %>
                         </div>
 
 
                     </div>
                     <div class="col-7">
-                        <form id="form-patient-info">
+                        <form id="form-customer-info">
                             <div class="form-group">
-                                <label for="patient-name" class="col-form-label text-label">Customer information:</label>
+                                <label for="customer-name" class="col-form-label text-label">Customer information:</label>
                                 <input type="text" class="form-control" id="name" name="name"
                                        placeholder="Full name">
                                 <div class="invalid-feedback">
@@ -210,7 +210,7 @@
             </div>
             <div class="modal-footer">
                 <div id="processLoading" class="process-loading d-none"> <span class="d-block mx-2"> <strong>Processing</strong></span><div class="loader"></div> </div>
-                <button type="button" class="ml-3 btn btn-secondary" data-dismiss="modal">Cancle</button>
+                <button type="button" class="ml-3 btn btn-secondary" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary" id="btn-confirm-booking">Confirm appointment</button>
             </div>
         </div>
@@ -264,8 +264,8 @@
     function openModalBooking(id) {
         let time = $(`#${id}`).data('time');
         let date = $(`#${id}`).data('date');
-        $('#time-patient-booking').text(time);
-        $('#date-patient-booking').text(date)
+        $('#time-customer-booking').text(time);
+        $('#date-customer-booking').text(date)
         $('#modalBooking').modal('show');
     }
 </script>

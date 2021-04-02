@@ -1,17 +1,17 @@
 const PHONE_REG = /((0[2|3|4|5|6|7|8|9]|01[2|6|8|9])+([0-9]{8})|(84[2|3|4|5|6|7|8|9]|841[2|6|8|9])+([0-9]{8}))\b/g;
 const EMAIL_REG = /[a-zA-Z][a-zA-Z0-9_\.]{1,32}@[a-z0-9]{2,}(\.[a-z0-9]{2,4}){1,2}/g;
 
-function getScheduleDoctorByDate() {
+function getScheduleMerchantByDate() {
     $('#day-book').on('change', function(event) {
         let value = $(this).val();
         let arrSplit = value.split("-");
         let date = arrSplit[1].trim();
-        let doctorId = $(this).data('doctor');
+        let merchantId = $(this).data('merchant');
 
         $.ajax({
             method: "POST",
             url: `${window.location.origin}/merchant/get-schedule-merchant-by-date`,
-            data: { date: date, doctorId: doctorId },
+            data: { date: date, merchantId: merchantId },
             success: function(data) {
                 //empty content inside div parent
                 $('#div-schedule-id').html('');
@@ -22,7 +22,7 @@ function getScheduleDoctorByDate() {
                     data.message.forEach((schedule, index) => {
                         if (schedule.isDisable === false) {
                             html += `
-                          <div id="btn-modal-${schedule.id}" data-doctorId="${schedule.doctorId}" data-date="${schedule.date}"
+                          <div id="btn-modal-${schedule.id}" data-merchantId="${schedule.merchantId}" data-date="${schedule.date}"
                                  data-time="${schedule.time}"
                                  class="text-decoration-none" onclick="openModalBooking(this.id)">
                                 <div class="doctor-time">
@@ -43,14 +43,14 @@ function getScheduleDoctorByDate() {
                         moreInfo = `
                          <div class="d-flex flex-column">
                                     <div>
-                                                <span class="d-block mt-2">Choose <i class="fa fa-hand-o-up" aria-hidden="true"></i>  and book a free consultation</span>
+                                                <span class="d-block mt-2">Choose <i class="fa fa-hand-o-up" aria-hidden="true"></i>  and book now</span>
                                     </div>
                                     <div style="border-top: 1px solid #ccc"
                                          class="d-flex flex-column">
                                                             <span class="d-block pt-3 pb-1"
                                                                   style="text-transform: uppercase">Address:</span>
                                         <span class="d-block pb-1"
-                                              style="border-bottom: 1px solid #ccc">${data.doctor.address}</span>
+                                              style="border-bottom: 1px solid #ccc">${data.merchant.address}</span>
                                     </div>
                                     
                                 </div>
@@ -60,7 +60,7 @@ function getScheduleDoctorByDate() {
                 } else {
                     html = `
                             <div>
-                                "${data.doctor.name}" does not have a schedule on <b>${value}</b>. Please select the next available time.
+                                "${data.merchant.name}" does not have a schedule on <b>${value}</b>. Please select the next available time.
                             </div>
                     `;
                     moreInfo = '';
@@ -78,28 +78,28 @@ function getScheduleDoctorByDate() {
     });
 }
 
-function specializationGetScheduleDoctorByDate() {
-    $('.doctor-schedule-spe').unbind('change').bind('change', function(event) {
+function specializationGetScheduleMerchantByDate() {
+    $('.merchant-schedule-spe').unbind('change').bind('change', function(event) {
         let value = $(this).val();
         let arrSplit = value.split("-");
         let date = arrSplit[1].trim();
-        let doctorId = $(this).data('doctor');
+        let merchantId = $(this).data('merchant');
 
         $.ajax({
             method: "POST",
             url: `${window.location.origin}/merchant/get-schedule-merchant-by-date`,
-            data: { date: date, doctorId: doctorId },
+            data: { date: date, merchantId: merchantId },
             success: function(data) {
                 //empty content inside div parent
-                $(`#div-schedule-${doctorId}`).html('');
-                $(`#div-more-info-${doctorId}`).html('');
+                $(`#div-schedule-${merchantId}`).html('');
+                $(`#div-more-info-${merchantId}`).html('');
                 let html = '';
                 let moreInfo = '';
                 if (data.message.length > 0) {
                     data.message.forEach((schedule, index) => {
                         if (schedule.isDisable === false) {
                             html += `
-                          <div id="spe-btn-modal-${schedule.id}" data-doctor-id="${schedule.doctorId}" data-date="${schedule.date}"
+                          <div id="spe-btn-modal-${schedule.id}" data-merchant-id="${schedule.merchantId}" data-date="${schedule.date}"
                                  data-time="${schedule.time}"
                                  class="text-decoration-none show-modal-at-clinic-page">
                                 <div class="doctor-time">
@@ -120,11 +120,11 @@ function specializationGetScheduleDoctorByDate() {
                     moreInfo = `
                         <div class="d-flex flex-column">
                                             <div>
-                                                <span class="d-block mt-2"> Choose <i class="fa fa-hand-o-up" aria-hidden="true"></i>  and book a free consultation</span>
+                                                <span class="d-block mt-2"> Choose <i class="fa fa-hand-o-up" aria-hidden="true"></i>  and book now</span>
                                             </div>
                                             <div style="border-top: 1px solid #ccc" class="d-flex flex-column">
                                                 <span class="d-block pt-3 pb-1" style="text-transform: uppercase">Address:</span>
-                                                <span class="d-block pb-1" style="border-bottom: 1px solid #ccc">${data.doctor.address}</span>
+                                                <span class="d-block pb-1" style="border-bottom: 1px solid #ccc">${data.merchant.address}</span>
                                             </div>
                                           
                          </div>
@@ -133,16 +133,16 @@ function specializationGetScheduleDoctorByDate() {
                     html = `
                             <div class="no-schedule">
                                
-                                 "${data.doctor.name}" does not have a schedule on <b>${value}</b>. Please select the next available time.
+                                 "${data.merchant.name}" does not have a schedule on <b>${value}</b>. Please select the next available time.
 
                             </div>
                     `;
                     moreInfo = '';
                 }
 
-                $(`#div-schedule-${doctorId}`).append(html);
+                $(`#div-schedule-${merchantId}`).append(html);
                 if (moreInfo !== '') {
-                    $(`#div-more-info-${doctorId}`).append(moreInfo);
+                    $(`#div-more-info-${merchantId}`).append(moreInfo);
                 }
 
             },
@@ -168,10 +168,10 @@ function showModalAllClinics() {
     });
 }
 
-function showModalAllDoctors() {
-    $('.show-all-doctors').on('click', function(e) {
+function showModalAllMerchants() {
+    $('.show-all-merchants').on('click', function(e) {
         e.preventDefault();
-        $('#modalAllDoctors').modal('show');
+        $('#modalAllMerchants').modal('show');
     });
 }
 
@@ -276,7 +276,7 @@ function showExtraInfoBooking() {
     })
 }
 
-function validateInputPageDoctor() {
+function validateInputPageMerchant() {
     if (!$("#name").val()) {
         $("#name").addClass('is-invalid');
         return false;
@@ -316,20 +316,20 @@ function validateInputPageDoctor() {
     return true;
 }
 
-function handleBookingPageDoctorNormal(formData) {
+function handleBookingPageMerchantNormal(formData) {
     $.ajax({
         method: "POST",
-        url: `${window.location.origin}/booking-doctor-normal/create`,
+        url: `${window.location.origin}/booking-merchant-normal/create`,
         data: formData,
         cache: false,
         contentType: false,
         processData: false,
         success: function(data) {
-            if (typeof (data.patient) === 'string') {
-                alert("Unfortunately, this appointment has enough patients booked, please choose a different time.");
+            if (typeof (data.customer) === 'string') {
+                alert("Unfortunately, this appointment has enough customers booked, please choose a different time.");
                 window.location.reload(true);
             } else {
-                window.location.href = `${window.location.origin}/booking-info/${data.patient.id}`;
+                window.location.href = `${window.location.origin}/booking-info/${data.customer.id}`;
             }
         },
         error: function(error) {
@@ -339,17 +339,17 @@ function handleBookingPageDoctorNormal(formData) {
     });
 }
 
-function handleBookingPageDoctorWithoutFiles(data) {
+function handleBookingPageMerchantWithoutFiles(data) {
     $.ajax({
         method: "POST",
         url: `${window.location.origin}/booking-merchant-without-files/create`,
         data: data,
         success: function(data) {
-            if (typeof (data.patient) === 'string') {
-                alert("Unfortunately, this appointment has enough patients booked, please choose a different time.");
+            if (typeof (data.customer) === 'string') {
+                alert("Unfortunately, this appointment has enough customers booked, please choose a different time.");
                 window.location.reload(true);
             } else {
-                window.location.href = `${window.location.origin}/booking-info/${data.patient.id}`;
+                window.location.href = `${window.location.origin}/booking-info/${data.customer.id}`;
             }
 
         },
@@ -360,27 +360,27 @@ function handleBookingPageDoctorWithoutFiles(data) {
     });
 }
 
-function handleBookingPageDoctor() {
+function handleBookingPageMerchant() {
     $("#btn-confirm-booking").on("click", function(event) {
-        let check = validateInputPageDoctor();
+        let check = validateInputPageMerchant();
         if (check) {
             $(this).prop('disabled', true);
             $('#processLoading').removeClass('d-none');
-            let formData = new FormData($('form#form-patient-info')[0]);
+            let formData = new FormData($('form#form-customer-info')[0]);
             //contain file upload
-            let doctorId = $('#infoDoctor').data('doctor-id');
-            let time = $('#time-patient-booking').text();
-            let date = $('#date-patient-booking').text();
+            let merchantId = $('#infoMerchant').data('merchant-id');
+            let time = $('#time-customer-booking').text();
+            let date = $('#date-customer-booking').text();
 
             if ($('#oldForms').val()) {
-                formData.append("doctorId", doctorId);
+                formData.append("merchantId", merchantId);
                 formData.append('timeBooking', time);
                 formData.append('dateBooking', date);
-                handleBookingPageDoctorNormal(formData);
+                handleBookingPageMerchantNormal(formData);
             } else {
 
                 let data = {
-                    doctorId: doctorId,
+                    merchantId: merchantId,
                     timeBooking: time,
                     dateBooking: date,
                 };
@@ -388,7 +388,7 @@ function handleBookingPageDoctor() {
                     data[pair[0]] = pair[1]
                 }
                 delete data.oldForms;
-                handleBookingPageDoctorWithoutFiles(data);
+                handleBookingPageMerchantWithoutFiles(data);
             }
         }
     });
@@ -397,11 +397,11 @@ function handleBookingPageDoctor() {
 function showModalBookingClinicPage() {
     $("#clinicRightContent").on('click', '.show-modal-at-clinic-page', function() {
         let id = $(this).attr('id');
-        let doctorId = $(`#${id}`).data('doctor-id');
+        let merchantId = $(`#${id}`).data('merchant-id');
         let date = $(`#${id}`).data('date');
         let time = $(`#${id}`).data('time');
         let formData = new FormData();
-        formData.append('id', doctorId);
+        formData.append('id', merchantId);
 
         let data = {};
         for (let pair of formData.entries()) {
@@ -409,16 +409,16 @@ function showModalBookingClinicPage() {
         }
         $.ajax({
             method: "POST",
-            url: `${window.location.origin}/api/get-info-doctor-by-id`,
+            url: `${window.location.origin}/api/get-info-merchant-by-id`,
             data: data,
             success: function(data) {
-                $('#infoDoctorSpe').attr('data-doctor-id', doctorId);
-                $('#modal-avatar-doctor-spe').attr('src', `/images/users/${data.doctor.avatar}`);
-                $('#doctor-name-spe').text(`${data.doctor.name}`);
-                $('#time-patient-booking').text(`${time}`);
-                $('#date-patient-booking').text(`${date}`);
-                $('#doctor-address-spe').text(`${data.doctor.address}`);
-                $('#modalBookingClinicDoctor').modal('show');
+                $('#infoMerchantSpe').attr('data-merchant-id', merchantId);
+                $('#modal-avatar-merchant-spe').attr('src', `/images/users/${data.merchant.avatar}`);
+                $('#merchant-name-spe').text(`${data.merchant.name}`);
+                $('#time-customer-booking').text(`${time}`);
+                $('#date-customer-booking').text(`${date}`);
+                $('#merchant-address-spe').text(`${data.merchant.address}`);
+                $('#modalBookingClinicMerchant').modal('show');
             },
             error: function(error) {
                 alertify.error('An error occurs, please try again later!!');
@@ -430,25 +430,25 @@ function showModalBookingClinicPage() {
 
 function handleBookingPageClinic() {
     $('#btn-confirm-booking-spe').on('click', function(e) {
-        let check = validateInputPageDoctor();
+        let check = validateInputPageMerchant();
         if (check) {
             $(this).prop('disabled', true);
             $('#processLoading').removeClass('d-none');
-            let time = $('#time-patient-booking').text();
-            let date = $('#date-patient-booking').text();
+            let time = $('#time-customer-booking').text();
+            let date = $('#date-customer-booking').text();
 
-            let formData = new FormData($('form#form-patient-info-spe')[0]);
+            let formData = new FormData($('form#form-customer-info-spe')[0]);
             //contain file upload
-            let doctorId = $('#infoDoctorSpe').attr('data-doctor-id');
+            let merchantId = $('#infoMerchantSpe').attr('data-merchant-id');
             if ($('#oldForms').val()) {
-                formData.append("doctorId", doctorId);
+                formData.append("merchantId", merchantId);
                 formData.append('timeBooking', time);
                 formData.append('dateBooking', date);
-                handleBookingPageDoctorNormal(formData);
+                handleBookingPageMerchantNormal(formData);
             } else {
 
                 let data = {
-                    doctorId: doctorId,
+                    merchantId: merchantId,
                     timeBooking: time,
                     dateBooking: date,
                 };
@@ -456,20 +456,20 @@ function handleBookingPageClinic() {
                     data[pair[0]] = pair[1]
                 }
                 delete data.oldForms;
-                handleBookingPageDoctorWithoutFiles(data);
+                handleBookingPageMerchantWithoutFiles(data);
             }
         }
     });
 }
 
 function showModalBookingSpecializationPage() {
-    $("#specializationDoctor").on('click', '.show-modal-at-clinic-page', function() {
+    $("#specializationMerchant").on('click', '.show-modal-at-clinic-page', function() {
         let id = $(this).attr('id');
-        let doctorId = $(`#${id}`).data('doctor-id');
+        let merchantId = $(`#${id}`).data('merchant-id');
         let date = $(`#${id}`).data('date');
         let time = $(`#${id}`).data('time');
         let formData = new FormData();
-        formData.append('id', doctorId);
+        formData.append('id', merchantId);
 
         let data = {};
         for (let pair of formData.entries()) {
@@ -477,15 +477,15 @@ function showModalBookingSpecializationPage() {
         }
         $.ajax({
             method: "POST",
-            url: `${window.location.origin}/api/get-info-doctor-by-id`,
+            url: `${window.location.origin}/api/get-info-merchant-by-id`,
             data: data,
             success: function(data) {
-                $('#infoDoctorSpe').attr('data-doctor-id', doctorId);
-                $('#modal-avatar-doctor-spe').attr('src', `/images/users/${data.doctor.avatar}`);
-                $('#doctor-name-spe').text(`${data.doctor.name}`);
-                $('#time-patient-booking').text(`${time}`);
-                $('#date-patient-booking').text(`${date}`);
-                $('#doctor-address-spe').text(`${data.doctor.address}`);
+                $('#infoMerchantSpe').attr('data-merchant-id', merchantId);
+                $('#modal-avatar-merchant-spe').attr('src', `/images/users/${data.merchant.avatar}`);
+                $('#merchant-name-spe').text(`${data.merchant.name}`);
+                $('#time-customer-booking').text(`${time}`);
+                $('#date-customer-booking').text(`${date}`);
+                $('#merchant-address-spe').text(`${data.merchant.address}`);
                 $('#modalBookingSpe').modal('show');
             },
             error: function(error) {
@@ -523,10 +523,10 @@ function validateFeedback() {
 function handleSubmitFeedback() {
     $('#sendFeedback').on('click', function(e) {
 
-        let doctorId = $(this).attr('data-doctor-id');
+        let merchantId = $(this).attr('data-merchant-id');
         let formData = new FormData($('form#formFeedBack')[0]);
         let data = {
-            doctorId: doctorId
+            merchantId: merchantId
         };
         for (let pair of formData.entries()) {
             data[pair[0]] = pair[1]
@@ -567,7 +567,7 @@ function handleSearchHomepage() {
                     let html = '';
                     $('#show-info-search').empty();
 
-                    if (data.clinics.length === 0 && data.specializations.length === 0 && data.doctors.length === 0) {
+                    if (data.clinics.length === 0 && data.specializations.length === 0 && data.merchants.length === 0) {
                         html += `
                          <div class="child-info">
                                No search results found
@@ -575,10 +575,10 @@ function handleSearchHomepage() {
                         `;
                     }
 
-                    data.doctors.forEach((doctor) => {
+                    data.merchants.forEach((merchant) => {
                         html += `
                          <div class="child-info">
-                                <a href="detail/merchant/${doctor.id}">Doctor - ${doctor.name}</a>
+                                <a href="detail/merchant/${merchant.id}">Merchant - ${merchant.name}</a>
                         </div>
                         `;
                     });
@@ -606,17 +606,17 @@ function handleSearchHomepage() {
 }
 
 $(document).ready(function(e) {
-    getScheduleDoctorByDate();
-    specializationGetScheduleDoctorByDate();
+    getScheduleMerchantByDate();
+    specializationGetScheduleMerchantByDate();
     showModalAllSpecializations();
     showModalAllClinics();
-    showModalAllDoctors();
+    showModalAllMerchants();
     showPostsForUsers();
     searchElasticClient();
     searchInSearchPost();
     searchInDetailPost();
     showExtraInfoBooking();
-    handleBookingPageDoctor();
+    handleBookingPageMerchant();
     showModalBookingClinicPage();
     showModalBookingSpecializationPage();
     handleBookingPageClinic();

@@ -1,15 +1,15 @@
-import db from "./../models";
+import db from "../models";
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 import moment from "moment";
-import patientService from "./patientService";
+import customerService from "./customerService";
 import mailer from "../config/mailer";
 import { transMailRemedy } from "../../lang/en";
 
 var Minizip = require('minizip-asm.js');
 var fs = require("fs");
-const PATH_ZIP = "src/public/images/patients/remedy/zip";
+const PATH_ZIP = "src/public/images/customers/remedy/zip";
 let maxBooking = 2;
 const statusPendingId = 3;
 const statusFailedId = 2;
@@ -17,11 +17,11 @@ const statusSuccessId = 1;
 const statusNewId = 4;
 const statusDone = 5;
 
-let getDoctorWithSchedule = (id, currentDate) => {
+let getMerchantWithSchedule = (id, currentDate) => {
     return new Promise((async (resolve, reject) => {
         //select with condition: chọn ngày hiện tại mà tổng đặt đang nhỏ hơn max
         try {
-            let doctor = await db.User.findOne({
+            let merchant = await db.User.findOne({
                 where: { id: id },
                 attributes: {
                     exclude: [ 'password' ]
@@ -34,7 +34,7 @@ let getDoctorWithSchedule = (id, currentDate) => {
                             sumBooking: { [Op.lt]: maxBooking }
                         }
                     }, {
-                        model: db.Doctor_User, attributes: [ 'specializationId' ]
+                        model: db.Merchant_User, attributes: [ 'specializationId' ]
                     },
                     {
                         model: db.Comment,
@@ -45,11 +45,11 @@ let getDoctorWithSchedule = (id, currentDate) => {
                 ]
             });
 
-            if (!doctor) {
-                reject(`Can't get doctor with id = ${id}`);
+            if (!merchant) {
+                reject(`Can't get merchant with id = ${id}`);
             }
 
-            let specializationId = doctor.Doctor_User.specializationId;
+            let specializationId = merchant.Merchant_User.specializationId;
             let specialization = await getSpecializationById(specializationId);
            
 
@@ -57,7 +57,7 @@ let getDoctorWithSchedule = (id, currentDate) => {
             let currentHour = `${date.getHours()}:${date.getMinutes()}`;
             let timeNow = moment(`${currentDate} ${currentHour}`, "DD/MM/YYYY hh:mm").toDate();
 
-            doctor.Schedules.forEach((schedule, index) => {
+            merchant.Schedules.forEach((schedule, index) => {
                 let startTime = schedule.time.split('-')[0];
                 let timeSchedule = moment(`${schedule.date} ${startTime}`, "DD/MM/YYYY hh:mm").toDate();
                 //isDisable nếu time hiện tại > time kế hoạch
@@ -67,7 +67,7 @@ let getDoctorWithSchedule = (id, currentDate) => {
 
 
             resolve({
-                doctor: doctor,
+                merchant: merchant,
                 specialization: specialization,
             });
         } catch (e) {
@@ -76,11 +76,11 @@ let getDoctorWithSchedule = (id, currentDate) => {
     }));
 };
 
-let getPostForDoctor = (id) => {
+let getPostForMerchant = (id) => {
     return new Promise((async (resolve, reject) => {
         try {
             let post = await db.Post.findOne({
-                where: { forDoctorId: id },
+                where: { forMerchantId: id },
                 order: [ [ 'createdAt', 'DESC' ] ],
                 attributes: [ 'id', 'title', 'contentHTML' ]
             });
@@ -96,7 +96,7 @@ let postCreateSchedule = (user, arrSchedule, maxBooking) => {
         try {
             let schedule = await Promise.all(arrSchedule.map(async (schedule) => {
                 await db.Schedule.create({
-                    'doctorId': user.id,
+                    'merchantId': user.id,
                     'date': schedule.date,
                     'time': schedule.time,
                     'maxBooking': maxBooking,
@@ -111,27 +111,27 @@ let postCreateSchedule = (user, arrSchedule, maxBooking) => {
     }));
 };
 
-let createPatient = (item) => {
+let createCustomer = (item) => {
     return new Promise((async (resolve, reject) => {
         try {
-            let patient = await db.Patient.create(item);
+            let customer = await db.Customer.create(item);
 
-            resolve(patient);
+            resolve(customer);
         } catch (e) {
             reject(e);
         }
     }));
 };
 
-let getScheduleDoctorByDate = (id, date) => {
+let getScheduleMerchantByDate = (id, date) => {
     return new Promise((async (resolve, reject) => {
         try {
             let schedule = await db.Schedule.findAll({
                 where: {
-                    doctorId: id, date: date, sumBooking: { [Op.lt]: maxBooking }
+                    merchantId: id, date: date, sumBooking: { [Op.lt]: maxBooking }
                 }
             });
-            let doctor = await getDoctorById(id);
+            let merchant = await getMerchantById(id);
 
             let dateNow = new Date();
             let currentDate = moment().format('DD/MM/YYYY');
@@ -148,7 +148,7 @@ let getScheduleDoctorByDate = (id, date) => {
 
             resolve({
                 schedule: schedule,
-                doctor: doctor
+                merchant: merchant
             });
         } catch (e) {
             reject(e);
@@ -156,13 +156,13 @@ let getScheduleDoctorByDate = (id, date) => {
     }));
 };
 
-let getDoctorById = (id) => {
+let getMerchantById = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let doctor = await db.User.findOne({
+            let merchant = await db.User.findOne({
                 where: { id: id, roleId: 2 }
             });
-            resolve(doctor);
+            resolve(merchant);
         } catch (e) {
             reject(e);
         }
@@ -180,10 +180,10 @@ let getSpecializationById = (id) => {
     }));
 };
 
-let getDoctorsForSpecialization = (id, date) => {
+let getMerchantsForSpecialization = (id, date) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let doctors = await db.Doctor_User.findAll({
+            let merchants = await db.Merchant_User.findAll({
                 where: { specializationId: id },
                 attributes: [ 'specializationId' ],
                 include: {
@@ -192,11 +192,11 @@ let getDoctorsForSpecialization = (id, date) => {
                 }
             });
 
-            //get schedule each doctor
-            await Promise.all(doctors.map(async (doctor) => {
+            //get schedule each merchant
+            await Promise.all(merchants.map(async (merchant) => {
                 let schedule = await db.Schedule.findAll({
                     where: {
-                        doctorId: doctor.User.id, date: date, sumBooking: { [Op.lt]: maxBooking }
+                        merchantId: merchant.User.id, date: date, sumBooking: { [Op.lt]: maxBooking }
                     },
                     attributes: [ 'id', 'date', 'time' ]
                 });
@@ -216,52 +216,52 @@ let getDoctorsForSpecialization = (id, date) => {
                 });
 
 
-                doctor.setDataValue('schedule', schedule);
+                merchant.setDataValue('schedule', schedule);
             }));
-            resolve(doctors)
+            resolve(merchants)
         } catch (e) {
             reject(e);
         }
     });
 };
 
-let getInfoDoctorById = (id) => {
+let getInfoMerchantById = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let doctor = await db.User.findOne({
+            let merchant = await db.User.findOne({
                 where: { id: id },
                 attributes: [ 'id', 'name', 'avatar', 'address', 'phone', 'description' ],
                 include: {
-                    model: db.Doctor_User,
+                    model: db.Merchant_User,
                     attributes: [ 'specializationId' ]
                 }
             });
 
             let specialization = await db.Specialization.findOne({
-                where: { id: doctor.Doctor_User.specializationId }, attributes: [ 'name' ]
+                where: { id: merchant.Merchant_User.specializationId }, attributes: [ 'name' ]
             });
 
 
-            doctor.setDataValue('specializationName', specialization.name);
-            resolve(doctor);
+            merchant.setDataValue('specializationName', specialization.name);
+            resolve(merchant);
         } catch (e) {
             reject(e);
         }
     });
 };
 
-let deleteDoctorById = (id) => {
+let deleteMerchantById = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             await db.User.destroy({
                 where: { id: id }
             });
 
-            let doctor = await db.Doctor_User.findOne({
-                where: { doctorId: id }
+            let merchant = await db.Merchant_User.findOne({
+                where: { merchantId: id }
             });
-            if (doctor) {
-                await db.Doctor_User.destroy({ where: { id: doctor.id } });
+            if (merchant) {
+                await db.Merchant_User.destroy({ where: { id: merchant.id } });
             }
 
             resolve('delete successful')
@@ -271,36 +271,36 @@ let deleteDoctorById = (id) => {
     });
 };
 
-let getDoctorForEditPage = (id) => {
+let getMerchantForEditPage = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let doctor = await db.User.findOne({
+            let merchant = await db.User.findOne({
                 where: { id: id },
                 include: {
-                    model: db.Doctor_User,
+                    model: db.Merchant_User,
 
                 }
             });
-            resolve(doctor)
+            resolve(merchant)
         } catch (e) {
             reject(e);
         }
     });
 };
 
-let updateDoctorInfo = (data) => {
+let updateMerchantInfo = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let doctor = await db.User.findOne({
+            let merchant = await db.User.findOne({
                 where: { id: data.id },
-                include: { model: db.Doctor_User, required: false }
+                include: { model: db.Merchant_User, required: false }
             });
-            await doctor.update(data);
-            if (doctor.Doctor_User) {
-                await doctor.Doctor_User.update(data);
+            await merchant.update(data);
+            if (merchant.Merchant_User) {
+                await merchant.Merchant_User.update(data);
             } else {
-                await db.Doctor_User.create({
-                    doctorId: data.id,
+                await db.Merchant_User.create({
+                    merchantId: data.id,
                     specializationId: data.specializationId,
                 })
             }
@@ -312,31 +312,31 @@ let updateDoctorInfo = (data) => {
     });
 };
 
-let getPatientsBookAppointment = (data) => {
+let getCustomersBookAppointment = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let patients = await db.Patient.findAll({
+            let customers = await db.Customer.findAll({
                 where: {
-                    doctorId: data.doctorId,
+                    merchantId: data.merchantId,
                     dateBooking: data.date,
                     statusId: statusSuccessId
                 },
                 order: [ [ 'updatedAt', 'ASC' ] ],
                 attributes: [ 'id', 'name', 'timeBooking', 'description' ]
             });
-            resolve(patients);
+            resolve(customers);
         } catch (e) {
             reject(e);
         }
     });
 };
 
-let getDoctorSchedules = (data) => {
+let getMerchantSchedules = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let schedules = await db.Schedule.findAll({
                 where: {
-                    doctorId: data.doctorId,
+                    merchantId: data.merchantId,
                     date: { [Op.in]: data.threeDaySchedules },
                 },
             });
@@ -347,7 +347,7 @@ let getDoctorSchedules = (data) => {
     });
 };
 
-let getPlacesForDoctor = () => {
+let getPlacesForMerchant = () => {
     return new Promise(async (resolve, reject) => {
         try {
             let places = await db.Place.findAll({
@@ -361,17 +361,17 @@ let getPlacesForDoctor = () => {
 };
 
 
-let getDoctorForFeedbackPage = (id) => {
+let getMerchantForFeedbackPage = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let doctor = await db.User.findOne({
+            let merchant = await db.User.findOne({
                 where: { id: id },
                 attributes: [ 'id', 'name', 'avatar' ]
             });
-            if (!doctor) {
-                reject(`Can't get feedback with doctorId=${id}`);
+            if (!merchant) {
+                reject(`Can't get feedback with merchantId=${id}`);
             }
-            resolve(doctor);
+            resolve(merchant);
         } catch (e) {
             reject(e);
         }
@@ -381,25 +381,25 @@ let getDoctorForFeedbackPage = (id) => {
 let createFeedback = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let doctorId = data.doctorId;
+            let merchantId = data.merchantId;
             let phone = data.feedbackPhone;
-            //check patient
+            //check customer
 
-            let patient = await db.Patient.findOne({
+            let customer = await db.Customer.findOne({
                 where: {
-                    doctorId: doctorId,
+                    merchantId: merchantId,
                     phone: phone,
                     statusId: statusSuccessId
                 },
                 attributes: [ 'name', 'timeBooking', 'dateBooking' ]
             });
 
-            if (patient) {
+            if (customer) {
                 let feedback = {
-                    doctorId: doctorId,
-                    name: patient.name,
-                    timeBooking: patient.timeBooking,
-                    dateBooking: patient.dateBooking,
+                    merchantId: merchantId,
+                    name: customer.name,
+                    timeBooking: customer.timeBooking,
+                    dateBooking: customer.dateBooking,
                     phone: phone,
                     content: data.feedbackContent,
                     createdAt: Date.now()
@@ -407,7 +407,7 @@ let createFeedback = (data) => {
                 let cm = await db.Comment.create(feedback);
                 resolve(cm);
             } else {
-                resolve('patient not exist')
+                resolve('customer not exist')
             }
 
         } catch (e) {
@@ -417,19 +417,19 @@ let createFeedback = (data) => {
 };
 
 module.exports = {
-    getDoctorForFeedbackPage: getDoctorForFeedbackPage,
-    getDoctorWithSchedule: getDoctorWithSchedule,
+    getMerchantForFeedbackPage: getMerchantForFeedbackPage,
+    getMerchantWithSchedule: getMerchantWithSchedule,
     postCreateSchedule: postCreateSchedule,
-    createPatient: createPatient,
-    getPostForDoctor: getPostForDoctor,
-    getScheduleDoctorByDate: getScheduleDoctorByDate,
-    getDoctorsForSpecialization: getDoctorsForSpecialization,
-    getInfoDoctorById: getInfoDoctorById,
-    deleteDoctorById: deleteDoctorById,
-    getDoctorForEditPage: getDoctorForEditPage,
-    updateDoctorInfo: updateDoctorInfo,
-    getPatientsBookAppointment: getPatientsBookAppointment,
-    getDoctorSchedules: getDoctorSchedules,
-    getPlacesForDoctor: getPlacesForDoctor,
+    createCustomer: createCustomer,
+    getPostForMerchant: getPostForMerchant,
+    getScheduleMerchantByDate: getScheduleMerchantByDate,
+    getMerchantsForSpecialization: getMerchantsForSpecialization,
+    getInfoMerchantById: getInfoMerchantById,
+    deleteMerchantById: deleteMerchantById,
+    getMerchantForEditPage: getMerchantForEditPage,
+    updateMerchantInfo: updateMerchantInfo,
+    getCustomersBookAppointment: getCustomersBookAppointment,
+    getMerchantSchedules: getMerchantSchedules,
+    getPlacesForMerchant: getPlacesForMerchant,
     createFeedback: createFeedback,
 };

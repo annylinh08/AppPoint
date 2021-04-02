@@ -1,19 +1,19 @@
 <% extend("master.ejs") %>
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">List of appointment appointments</h1>
+    <h1 class="h3 mb-0 text-gray-800">List of appointments</h1>
 
 </div>
 
 <!-- Content Row -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">List of appointment appointments</h6>
+        <h6 class="m-0 font-weight-bold text-primary">List of appointments</h6>
         <div class="my-3">
-            <label for="dateDoctorAppointment">Time: </label>
+            <label for="dateMerchantAppointment">Time: </label>
             <form method="GET" action="/merchant/manage/appointment">
                 <div class="form-row">
-                    <input id="dateDoctorAppointment" name="dateDoctorAppointment" value="<%= date %>" type="text"
+                    <input id="dateMerchantAppointment" name="dateMerchantAppointment" value="<%= date %>" type="text"
                            class="form-control col-4 mr-4">
                     <button class="btn btn-primary" type="submit">Search</button>
                 </div>
@@ -41,12 +41,12 @@
                            
 
                             <td class="mw-100 w-25">
-                                <button title="View patient's information" type="button" data-patient-id="<%= x.id %>"
+                                <button title="View customer's information" type="button" data-customer-id="<%= x.id %>"
                                         class="btn btn-info doctor-view-detail">Detail
                                 </button>
                                
                                 
-                                <i class="fa fa-trash-o" style="cursor: pointer" data-patient-id="<%= x.id %>" aria-hidden="true"
+                                <i class="fa fa-trash-o" style="cursor: pointer" data-customer-id="<%= x.id %>" aria-hidden="true"
                                    title="Cancel with the customer"></i>
                             </td>
                         </tr>
@@ -63,12 +63,12 @@
                            
 
                             <td class="mw-100 w-25">
-                                <button title="View patient's information" type="button" data-patient-id="<%= x.id %>"
+                                <button title="View customer's information" type="button" data-customer-id="<%= x.id %>"
                                         class="btn btn-info doctor-view-detail">Detail
                                 </button>
                                
                                 
-                                <i class="fa fa-trash-o" style="cursor: pointer" data-patient-id="<%= x.id %>" aria-hidden="true"
+                                <i class="fa fa-trash-o" style="cursor: pointer" data-customer-id="<%= x.id %>" aria-hidden="true"
                                    title="Cancel with the customer"></i>
                             </td>
                         </tr>
@@ -85,12 +85,12 @@
                            
 
                             <td class="mw-100 w-25">
-                                <button title="View patient's information" type="button" data-patient-id="<%= x.id %>"
+                                <button title="View customer's information" type="button" data-customer-id="<%= x.id %>"
                                         class="btn btn-info doctor-view-detail">Detail
                                 </button>
                                
                                 
-                                <i class="fa fa-trash-o" style="cursor: pointer" data-patient-id="<%= x.id %>" aria-hidden="true"
+                                <i class="fa fa-trash-o" style="cursor: pointer" data-customer-id="<%= x.id %>" aria-hidden="true"
                                    title="Cancel with the customer"></i>
                             </td>
                         </tr>
@@ -107,12 +107,12 @@
                            
 
                             <td class="mw-100 w-25">
-                                <button title="View patient's information" type="button" data-patient-id="<%= x.id %>"
+                                <button title="View customer's information" type="button" data-customer-id="<%= x.id %>"
                                         class="btn btn-info doctor-view-detail">Detail
                                 </button>
                                
                                 
-                                <i class="fa fa-trash-o" style="cursor: pointer" data-patient-id="<%= x.id %>" aria-hidden="true"
+                                <i class="fa fa-trash-o" style="cursor: pointer" data-customer-id="<%= x.id %>" aria-hidden="true"
                                    title="Cancel with the customer"></i>
                             </td>
                         </tr>
@@ -129,12 +129,12 @@
                            
 
                             <td class="mw-100 w-25">
-                                <button title="View patient's information" type="button" data-patient-id="<%= x.id %>"
+                                <button title="View customer's information" type="button" data-customer-id="<%= x.id %>"
                                         class="btn btn-info doctor-view-detail">Detail
                                 </button>
                                
                                 
-                                <i class="fa fa-trash-o" style="cursor: pointer" data-patient-id="<%= x.id %>" aria-hidden="true"
+                                <i class="fa fa-trash-o" style="cursor: pointer" data-customer-id="<%= x.id %>" aria-hidden="true"
                                    title="Cancel with the customer"></i>
                             </td>
                         </tr>
@@ -151,12 +151,12 @@
                            
 
                             <td class="mw-100 w-25">
-                                <button title="View patient's information" type="button" data-patient-id="<%= x.id %>"
+                                <button title="View customer's information" type="button" data-customer-id="<%= x.id %>"
                                         class="btn btn-info doctor-view-detail">Detail
                                 </button>
                                
                                 
-                                <i class="fa fa-trash-o" style="cursor: pointer" data-patient-id="<%= x.id %>" aria-hidden="true"
+                                <i class="fa fa-trash-o" style="cursor: pointer" data-customer-id="<%= x.id %>" aria-hidden="true"
                                    title="Cancel with the customer"></i>
                             </td>
                         </tr>
@@ -173,12 +173,12 @@
                            
 
                             <td class="mw-100 w-25">
-                                <button title="View patient's information" type="button" data-patient-id="<%= x.id %>"
+                                <button title="View customer's information" type="button" data-customer-id="<%= x.id %>"
                                         class="btn btn-info doctor-view-detail">Detail
                                 </button>
                                
                                 
-                                <i class="fa fa-trash-o" style="cursor: pointer" data-patient-id="<%= x.id %>" aria-hidden="true"
+                                <i class="fa fa-trash-o" style="cursor: pointer" data-customer-id="<%= x.id %>" aria-hidden="true"
                                    title="Cancel with the customer"></i>
                             </td>
                         </tr>
@@ -195,12 +195,12 @@
                            
 
                             <td class="mw-100 w-25">
-                                <button title="View patient's information" type="button" data-patient-id="<%= x.id %>"
+                                <button title="View customer's information" type="button" data-customer-id="<%= x.id %>"
                                         class="btn btn-info doctor-view-detail">Detail
                                 </button>
                                
                                 
-                                <i class="fa fa-trash-o" style="cursor: pointer" data-patient-id="<%= x.id %>" aria-hidden="true"
+                                <i class="fa fa-trash-o" style="cursor: pointer" data-customer-id="<%= x.id %>" aria-hidden="true"
                                    title="Cancel with the customer"></i>
                             </td>
                         </tr>
@@ -212,9 +212,9 @@
     </div>
 </div>
 
-<!-- Modal detail info patient-->
+<!-- Modal detail info customer-->
 <div class="modal fade " tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
-     id="modalDetailPatientForDoctor">
+     id="modalDetailPatientForMerchant">
     <div class="modal-dialog mw-100 w-75" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -226,36 +226,36 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="form-group col-4">
-                        <label class="col-form-label text-label" for="patientName">Name:</label>
-                        <input type="text" class="form-control" id="patientName" name="patientName">
+                        <label class="col-form-label text-label" for="customerName">Name:</label>
+                        <input type="text" class="form-control" id="customerName" name="customerName">
                     </div>
                     <div class="form-group col-4">
-                        <label class="col-form-label text-label" for="patientPhone">Phone number:</label>
-                        <input type="text" class="form-control" id="patientPhone" name="patientPhone">
+                        <label class="col-form-label text-label" for="customerPhone">Phone number:</label>
+                        <input type="text" class="form-control" id="customerPhone" name="customerPhone">
                     </div>
                     <div class="form-group col-4">
-                        <label class="col-form-label text-label" for="patientEmail">Email:</label>
-                        <input type="email" class="form-control" id="patientEmail" name="patientEmail">
+                        <label class="col-form-label text-label" for="customerEmail">Email:</label>
+                        <input type="email" class="form-control" id="customerEmail" name="customerEmail">
                     </div>
                     <div class="form-group col-2">
-                        <label class="col-form-label text-label" for="patientDate">Date:</label>
-                        <input type="text" class="form-control" id="patientDate" name="patientDate" readonly>
+                        <label class="col-form-label text-label" for="customerDate">Date:</label>
+                        <input type="text" class="form-control" id="customerDate" name="customerDate" readonly>
                     </div>
                     <div class="form-group col-2">
-                        <label class="col-form-label text-label" for="patientTime">Time:</label>
-                        <input type="text" class="form-control" id="patientTime" name="patientTime" readonly>
+                        <label class="col-form-label text-label" for="customerTime">Time:</label>
+                        <input type="text" class="form-control" id="customerTime" name="customerTime" readonly>
                     </div>
                     <div class="form-group col-4">
-                        <label class="col-form-label text-label" for="patientReason">Service Booking:</label>
-                        <textarea class="form-control" name="patientReason" id="patientReason"></textarea>
+                        <label class="col-form-label text-label" for="customerReason">Service Booking:</label>
+                        <textarea class="form-control" name="customerReason" id="customerReason"></textarea>
                     </div>
                     <div class="col-12">
-                        <label for="patientAddress">Extra info:</label>
+                        <label for="customerAddress">Extra info:</label>
                     </div>
 
                     <div class="form-group col-6">
-                        <label class="col-form-label text-label" for="patientHistoryBreath">Professional Note</label>
-                        <textarea class="form-control" name="patientHistoryBreath" id="patientHistoryBreath"></textarea>
+                        <label class="col-form-label text-label" for="customerHistoryBreath">Professional Note</label>
+                        <textarea class="form-control" name="customerHistoryBreath" id="customerHistoryBreath"></textarea>
                     </div>
                 </div>
             </div>

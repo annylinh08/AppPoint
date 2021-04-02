@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
     const Schedule = sequelize.define('Schedule', {
-        doctorId: DataTypes.INTEGER,
+        merchantId: DataTypes.INTEGER,
         date: DataTypes.STRING,
         time: DataTypes.STRING,
         maxBooking: DataTypes.STRING,
@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         deletedAt: DataTypes.DATE
     }, {});
     Schedule.associate = function(models) {
-        models.Schedule.belongsTo(models.User, { foreignKey: 'doctorId' });
+        models.Schedule.belongsTo(models.User, { foreignKey: 'merchantId' });
     };
     return Schedule;
 };

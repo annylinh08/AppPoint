@@ -14,10 +14,10 @@
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `doctorcare`
+-- Database: `appoint`
 --
-CREATE DATABASE IF NOT EXISTS `appointment` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `appointment`;
+CREATE DATABASE IF NOT EXISTS `AppPoint` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `AppPoint`;
 
 -- --------------------------------------------------------
 
@@ -28,7 +28,7 @@ USE `appointment`;
 DROP TABLE IF EXISTS `comments`;
 CREATE TABLE IF NOT EXISTS `comments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `doctorId` int(11) DEFAULT NULL,
+  `merchantId` int(11) DEFAULT NULL,
   `timeBooking` varchar(255) DEFAULT NULL,
   `dateBooking` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
@@ -45,20 +45,20 @@ CREATE TABLE IF NOT EXISTS `comments` (
 -- Dumping data for table `comments`
 --
 
-INSERT INTO `comments` (`id`, `doctorId`, `timeBooking`, `dateBooking`, `name`, `phone`, `content`, `status`, `createdAt`, `updatedAt`, `deletedAt`) VALUES
+INSERT INTO `comments` (`id`, `merchantId`, `timeBooking`, `dateBooking`, `name`, `phone`, `content`, `status`, `createdAt`, `updatedAt`, `deletedAt`) VALUES
 (2, 12, '08:00 - 09:00', '15/11/2020', 'Alex', '0321456789', 'very good!', 1, '2020-11-15 08:25:42', '2020-11-15 08:25:56', NULL),
 (3, 12, '10:00 - 11:00', '15/11/2020', 'Kane', '0321848484', 'excellent service. I love it', 1, '2020-11-15 08:28:51', '2020-11-15 08:28:56', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `doctor_users`
+-- Table structure for table `merchant_users`
 --
 
-DROP TABLE IF EXISTS `doctor_users`;
-CREATE TABLE IF NOT EXISTS `doctor_users` (
+DROP TABLE IF EXISTS `merchant_users`;
+CREATE TABLE IF NOT EXISTS `merchant_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `doctorId` int(11) NOT NULL,
+  `merchantId` int(11) NOT NULL,
   `specializationId` int(11) NOT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime DEFAULT NULL,
@@ -67,10 +67,10 @@ CREATE TABLE IF NOT EXISTS `doctor_users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `doctor_users`
+-- Dumping data for table `merchant_users`
 --
 
-INSERT INTO `doctor_users` (`id`, `doctorId`, `specializationId`, `createdAt`, `updatedAt`, `deletedAt`) VALUES
+INSERT INTO `merchant_users` (`id`, `merchantId`, `specializationId`, `createdAt`, `updatedAt`, `deletedAt`) VALUES
 (1, 2, 1, '2020-11-13 19:46:18', '2020-11-13 19:46:18', NULL),
 (2, 3, 2, '2020-11-13 20:19:56', '2020-11-13 20:19:56', NULL),
 (3, 4, 3, '2020-11-13 20:20:15', '2020-11-13 20:20:15', NULL),
@@ -88,7 +88,7 @@ INSERT INTO `doctor_users` (`id`, `doctorId`, `specializationId`, `createdAt`, `
 DROP TABLE IF EXISTS `extrainfos`;
 CREATE TABLE IF NOT EXISTS `extrainfos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `patientId` int(11) DEFAULT NULL,
+  `customerId` int(11) DEFAULT NULL,
   `historyBreath` text DEFAULT NULL,
   `placeId` int(11) DEFAULT NULL,
   `oldForms` text DEFAULT NULL,
@@ -103,13 +103,13 @@ CREATE TABLE IF NOT EXISTS `extrainfos` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `patients`
+-- Table structure for table `customers`
 --
 
-DROP TABLE IF EXISTS `patients`;
-CREATE TABLE IF NOT EXISTS `patients` (
+DROP TABLE IF EXISTS `customers`;
+CREATE TABLE IF NOT EXISTS `customers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `doctorId` int(11) NOT NULL,
+  `merchantId` int(11) NOT NULL,
   `statusId` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
@@ -125,10 +125,10 @@ CREATE TABLE IF NOT EXISTS `patients` (
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `patients`
+-- Dumping data for table `customers`
 --
 
-INSERT INTO `patients` (`id`, `doctorId`, `statusId`, `name`, `phone`, `dateBooking`, `timeBooking`, `email`, `address`, `description`, `createdAt`, `updatedAt`, `deletedAt`) VALUES
+INSERT INTO `customers` (`id`, `merchantId`, `statusId`, `name`, `phone`, `dateBooking`, `timeBooking`, `email`, `address`, `description`, `createdAt`, `updatedAt`, `deletedAt`) VALUES
 (4, 12, 1, 'Alex', '0321456789', '15/11/2020', '08:00 - 09:00', 'alex@gmail.com', 'usa', 'aaaaaaaaaaaaaaaaaa', '2020-11-14 20:20:18', '2020-11-14 20:22:14', NULL),
 (5, 12, 1, 'Kane', '0321848484', '15/11/2020', '10:00 - 11:00', 'kane@gmail.com', 'usa', '', '2020-11-15 08:27:25', '2020-11-15 08:27:40', NULL);
 
@@ -171,7 +171,7 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `title` varchar(255) DEFAULT NULL,
   `contentMarkdown` text DEFAULT NULL,
   `contentHTML` text DEFAULT NULL,
-  `forDoctorId` int(11) DEFAULT NULL,
+  `forMerchantId` int(11) DEFAULT NULL,
   `forSpecializationId` int(11) DEFAULT NULL,
   `writerId` int(11) NOT NULL,
   `confirmByDoctor` tinyint(1) DEFAULT NULL,
@@ -217,7 +217,7 @@ INSERT INTO `roles` (`id`, `name`, `createdAt`, `updatedAt`, `deletedAt`) VALUES
 DROP TABLE IF EXISTS `schedules`;
 CREATE TABLE IF NOT EXISTS `schedules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `doctorId` int(11) NOT NULL,
+  `merchantId` int(11) NOT NULL,
   `date` varchar(255) DEFAULT NULL,
   `time` varchar(255) DEFAULT NULL,
   `maxBooking` varchar(255) DEFAULT NULL,
@@ -252,7 +252,7 @@ INSERT INTO `sequelizemeta` (`name`) VALUES
 ('20200311025604-create-specialization.js'),
 ('20200311025619-create-schedule.js'),
 ('20200311025632-create-status.js'),
-('20200311025648-create-patient.js'),
+('20200311025648-create-customer.js'),
 ('migration-create-comment.js'),
 ('migration-create-doctor-user.js'),
 ('migration-create-extraInfo.js'),
@@ -342,7 +342,7 @@ INSERT INTO `statuses` (`id`, `name`, `createdAt`, `updatedAt`, `deletedAt`) VAL
 DROP TABLE IF EXISTS `supporterlogs`;
 CREATE TABLE IF NOT EXISTS `supporterlogs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `patientId` int(11) DEFAULT NULL,
+  `customerId` int(11) DEFAULT NULL,
   `supporterId` int(11) DEFAULT NULL,
   `content` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
@@ -355,7 +355,7 @@ CREATE TABLE IF NOT EXISTS `supporterlogs` (
 -- Dumping data for table `supporterlogs`
 --
 
-INSERT INTO `supporterlogs` (`id`, `patientId`, `supporterId`, `content`, `createdAt`, `updatedAt`, `deletedAt`) VALUES
+INSERT INTO `supporterlogs` (`id`, `customerId`, `supporterId`, `content`, `createdAt`, `updatedAt`, `deletedAt`) VALUES
 (7, 4, NULL, 'The customer made an appointment from the system ', '2020-11-14 20:20:18', '2020-11-14 20:20:18', NULL),
 (8, 4, 8, 'New appointments have been received', '2020-11-14 20:20:41', '2020-11-14 20:20:41', NULL),
 (9, 4, 8, 'Cancel with reason - The customer canceled the schedule', '2020-11-14 20:20:47', '2020-11-14 20:20:47', NULL),
@@ -392,12 +392,12 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `address`, `phone`, `avatar`, `description`, `roleId`, `isActive`, `createdAt`, `updatedAt`, `deletedAt`) VALUES
 (1, 'admin - App-point', 'admin@gmail.com', '$2a$07$Bq0hCq3kVrvKUHfMT0NJROmQkx09aEQkGlwBGEdw799YJvWqH1kuy', 'Toronto', '088456732', 'admin.png', NULL, 1, 1, '2020-11-13 19:44:36', '2020-11-13 19:44:36', NULL),
-(2, 'Hardrock Nails', 'johny@gmail.com', '$2a$07$Bq0hCq3kVrvKUHfMT0NJROmQkx09aEQkGlwBGEdw799YJvWqH1kuy', '790 Broadview Ave, Toronto, ON M4K 2P7', '088456735', 'johny.jpg', '   ', 2, 1, '2020-11-13 19:44:36', '2020-11-13 19:46:18', NULL),
-(3, 'Beauty Divine', 'kelly@gmail.com', '$2a$07$Bq0hCq3kVrvKUHfMT0NJROmQkx09aEQkGlwBGEdw799YJvWqH1kuy', '2391 Bloor St W, Toronto, ON M6S 1P6', '088456735', 'kelly.jpg', '   ', 2, 1, '2020-11-13 19:44:36', '2020-11-13 20:19:55', NULL),
-(4, 'Hand & Stone', 'jasmin@gmail.com', '$2a$07$Bq0hCq3kVrvKUHfMT0NJROmQkx09aEQkGlwBGEdw799YJvWqH1kuy', '130 Live Eight Way, Barrie, ON L4N 6P1', '088456735', 'jasmin.jpg', '   ', 2, 1, '2020-11-13 19:44:36', '2020-11-13 20:20:15', NULL),
-(5, 'Eye Love Lashes', 'jenn@gmail.com', '$2a$07$Bq0hCq3kVrvKUHfMT0NJROmQkx09aEQkGlwBGEdw799YJvWqH1kuy', '151 Essa Rd, Barrie, ON L4N 3L2', '088456735', 'jenn.jpg', '   ', 2, 1, '2020-11-13 19:44:36', '2020-11-13 20:20:26', NULL),
-(6, 'New Market Dental', 'sam@gmail.com', '$2a$07$Bq0hCq3kVrvKUHfMT0NJROmQkx09aEQkGlwBGEdw799YJvWqH1kuy', '17906 Yonge St #2, Newmarket, ON L3Y 8S1', '088456735', 'doctor4.jpg','      ', 2, 1, '2020-11-13 19:44:36', '2020-11-14 19:49:26', NULL),
-(7, 'Envy Hair Salon', 'ben@gmail.com', '$2a$07$Bq0hCq3kVrvKUHfMT0NJROmQkx09aEQkGlwBGEdw799YJvWqH1kuy', '241 Essa Rd #2, Barrie, ON L4N 6B7', '088456735', 'doctor1.jpg','      ', 2, 1, '2020-11-13 19:44:36', '2020-11-14 19:49:12', NULL),
+(2, 'Hardrock Nails', 'johny@gmail.com', '$2a$07$Bq0hCq3kVrvKUHfMT0NJROmQkx09aEQkGlwBGEdw799YJvWqH1kuy', '790 Broadview Ave, Toronto, ON M4K 2P7', '088456735', 'hardrock_logo.png', '   ', 2, 1, '2020-11-13 19:44:36', '2020-11-13 19:46:18', NULL),
+(3, 'Beauty Divine', 'kelly@gmail.com', '$2a$07$Bq0hCq3kVrvKUHfMT0NJROmQkx09aEQkGlwBGEdw799YJvWqH1kuy', '2391 Bloor St W, Toronto, ON M6S 1P6', '088456735', 'divine.png', '   ', 2, 1, '2020-11-13 19:44:36', '2020-11-13 20:19:55', NULL),
+(4, 'Hand & Stone', 'jasmin@gmail.com', '$2a$07$Bq0hCq3kVrvKUHfMT0NJROmQkx09aEQkGlwBGEdw799YJvWqH1kuy', '130 Live Eight Way, Barrie, ON L4N 6P1', '088456735', 'hand-stone.jpg', '   ', 2, 1, '2020-11-13 19:44:36', '2020-11-13 20:20:15', NULL),
+(5, 'Eye Love Lashes', 'jenn@gmail.com', '$2a$07$Bq0hCq3kVrvKUHfMT0NJROmQkx09aEQkGlwBGEdw799YJvWqH1kuy', '151 Essa Rd, Barrie, ON L4N 3L2', '088456735', 'lashes.jpg', '   ', 2, 1, '2020-11-13 19:44:36', '2020-11-13 20:20:26', NULL),
+(6, 'New Market Dental', 'sam@gmail.com', '$2a$07$Bq0hCq3kVrvKUHfMT0NJROmQkx09aEQkGlwBGEdw799YJvWqH1kuy', '17906 Yonge St #2, Newmarket, ON L3Y 8S1', '088456735', 'dental-clinic.jpg','      ', 2, 1, '2020-11-13 19:44:36', '2020-11-14 19:49:26', NULL),
+(7, 'Envy Hair Salon', 'ben@gmail.com', '$2a$07$Bq0hCq3kVrvKUHfMT0NJROmQkx09aEQkGlwBGEdw799YJvWqH1kuy', '241 Essa Rd #2, Barrie, ON L4N 6B7', '088456735', 'envy.jpg','      ', 2, 1, '2020-11-13 19:44:36', '2020-11-14 19:49:12', NULL),
 (8, 'Supporter - Eric Pham', 'supporter@gmail.com', '$2a$07$Bq0hCq3kVrvKUHfMT0NJROmQkx09aEQkGlwBGEdw799YJvWqH1kuy', 'Toronto', '088456736', 'supporter.png', NULL, 3, 1, '2020-11-13 19:44:36', '2020-11-13 19:44:36', NULL),
 (12, 'Park Place Nails', 'info@parkplacenailsbarrie.ca', '$2a$07$9BufuZLkxEgNpDmpoKwkH.IbG.2fdvFKPahJQOIPwKoHiuFWvnG6W', '1b-24 North Village Way, Barrie, On, L4N6P3', '7055946520', 'business.jpg', 'This is a nail salon in Barrie', 2, 1, '2021-03-21 11:11:50', '2021-03-21 11:11:50', NULL);
 COMMIT;

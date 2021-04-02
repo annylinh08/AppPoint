@@ -15,14 +15,14 @@
                 <label for="address">The post serves:</label>
                 <div class="form-row">
                     <div class="form-group col-4">
-                        <select id="forDoctorId" class="form-control" name="forDoctorId">
-                            <% if(post.forDoctorId > 0) { %>
-                                <% doctors.forEach(function(x) { %>
-                                    <option value="<%= x.id %>" <% if(x.id === post.forDoctorId){%> selected <%}%>  > <%= x.name %> </option>
+                        <select id="forMerchantId" class="form-control" name="forMerchantId">
+                            <% if(post.forMerchantId > 0) { %>
+                                <% merchants.forEach(function(x) { %>
+                                    <option value="<%= x.id %>" <% if(x.id === post.forMerchantId){%> selected <%}%>  > <%= x.name %> </option>
                                 <% }) %>
                             <% } else { %>
                                 <option value="-1" selected>No business is chosen</option>
-                                <% doctors.forEach(function(x) { %>
+                                <% merchants.forEach(function(x) { %>
                                     <option value="<%= x.id %>"> <%= x.name %> </option>
                                 <% }) %>
                             <% } %>

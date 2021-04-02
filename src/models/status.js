@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         deletedAt: DataTypes.DATE
     }, {});
     Status.associate = function(models) {
-        models.Status.hasOne(models.Patient);
+        models.Status.hasOne(models.Customer);
     };
     return Status;
 };

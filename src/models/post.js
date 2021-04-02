@@ -4,17 +4,17 @@ module.exports = (sequelize, DataTypes) => {
         title: DataTypes.STRING,
         contentMarkdown: DataTypes.TEXT,
         contentHTML:DataTypes.TEXT,
-        forDoctorId: DataTypes.INTEGER,
+        forMerchantId: DataTypes.INTEGER,
         forSpecializationId: DataTypes.INTEGER,
         writerId: DataTypes.INTEGER,
-        confirmByDoctor: DataTypes.STRING,
+        confirmByMerchant: DataTypes.STRING,
         image: DataTypes.STRING,
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
         deletedAt: DataTypes.DATE
     }, {});
     Post.associate = function(models) {
-        models.Post.belongsTo(models.User, { foreignKey: 'forDoctorId' });
+        models.Post.belongsTo(models.User, { foreignKey: 'forMerchantId' });
         models.Post.belongsTo(models.Specialization, { foreignKey: 'forSpecializationId' });
     };
     return Post;
