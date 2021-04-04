@@ -215,7 +215,7 @@ body {
 .sec-for-doctors {
   height: 300px;
   border-top: 2px solid #ebebeb;
-  background-image: url("../images/background/for-doctors.jpg");
+  background: url("../images/background/call-center.jpg") center center no-repeat;
   color: #fff; }
   .sec-for-doctors .main-for-doctors {
     width: 90%; }

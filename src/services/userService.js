@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
 import db from "./../models";
 import helper from "../helper/client";
-import elastic from "./../config/elastic";
 import _ from "lodash";
 
 const Sequelize = require('sequelize');
