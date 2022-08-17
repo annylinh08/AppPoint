@@ -1,5 +1,5 @@
 # App-Point
-This is a web app that allows salons and clinics get and manage appointments from customers. Customers can reserve a spot from the front end. Salon and clinics have their own dashboard to manage appointment.
+This is a web app that allows salons and clinics get and manage appointments from customers. Customers can reserve a spot from the front end. Salon and clinics have their own dashboard to manage appointments.
 ## Technology
 JavaScript, Passport, MySQL, EJS, HTML, SCSS, CSS
 ## Quickstart (after downloading this project)
