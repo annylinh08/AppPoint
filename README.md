@@ -1,4 +1,7 @@
 # App-Point
+This is a web app that allows salons and clinics get and manage appointments from customers. Customers can reserve a spot from the front end. Salon and clinics have their own dashboard to manage appointment.
+## Technology
+JavaScript, Passport, MySQL
 ## Quickstart (after downloading this project)
 1. Open this project with your favorite editor(IDE), eg: Visual Studio Code
 2. Run the command (to install the node_modules): npm install
